@@ -27,7 +27,7 @@ export function Header() {
           {/* Logo */}
           <div className="flex items-center space-x-2 rtl:space-x-reverse">
             <BookOpen className="h-8 w-8 text-primary" />
-            <span className="text-xl font-bold text-gradient">العلوم العربية</span>
+            <span className="text-xl font-bold text-gradient">مولانا</span>
           </div>
 
           {/* Desktop Navigation */}
