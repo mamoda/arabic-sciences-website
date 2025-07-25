@@ -112,7 +112,9 @@ export function ScientistsSection() {
     { id: 'mathematics', name: 'الرياضيات', count: scientists.filter(s => s.category === 'mathematics').length },
     { id: 'physics', name: 'الفيزياء', count: scientists.filter(s => s.category === 'physics').length },
     { id: 'chemistry', name: 'الكيمياء', count: scientists.filter(s => s.category === 'chemistry').length },
-    { id: 'astronomy', name: 'الفلك', count: scientists.filter(s => s.category === 'astronomy').length }
+    { id: 'fiqh', name: 'الفقه', count: scientists.filter(s => s.category === 'fiqh').length },
+    { id: 'hadith', name: 'الحديث', count: scientists.filter(s => s.category === 'hadith').length },
+    { id: 'usul', name: 'أصول', count: scientists.filter(s => s.category === 'usul').length }
   ];
 
   const filteredScientists = selectedCategory === 'all' 
