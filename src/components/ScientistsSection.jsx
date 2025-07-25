@@ -1,11 +1,11 @@
-import { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
-import { Badge } from './ui/badge';
-import { Button } from './ui/button';
-import { Calendar, MapPin, Award, ChevronRight } from 'lucide-react';
+import { useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
+import { Badge } from "./ui/badge";
+import { Button } from "./ui/button";
+import { Calendar, MapPin, Award, ChevronRight } from "lucide-react";
 
 export function ScientistsSection() {
-  const [selectedCategory, setSelectedCategory] = useState('all');
+  const [selectedCategory, setSelectedCategory] = useState("all");
 
   const scientists = [
     {
@@ -19,10 +19,11 @@ export function ScientistsSection() {
       achievements: [
         "كتاب القانون في الطب",
         "أول من وصف التهاب السحايا",
-        "اكتشاف الطبيعة المعدية للأمراض"
+        "اكتشاف الطبيعة المعدية للأمراض",
       ],
-      description: "أبو علي الحسين بن عبد الله بن سينا، طبيب وفيلسوف مسلم من أعظم أطباء العالم. ألف أكثر من 200 كتاب في مختلف المجالات.",
-      image: "/src/assets/images/famous_scientists.jpg"
+      description:
+        "أبو علي الحسين بن عبد الله بن سينا، طبيب وفيلسوف مسلم من أعظم أطباء العالم. ألف أكثر من 200 كتاب في مختلف المجالات.",
+      image: "/src/assets/images/famous_scientists.jpg",
     },
     {
       id: 2,
@@ -35,10 +36,11 @@ export function ScientistsSection() {
       achievements: [
         "مؤسس علم الجبر",
         "تطوير النظام العشري",
-        "خوارزميات الحساب"
+        "خوارزميات الحساب",
       ],
-      description: "محمد بن موسى الخوارزمي، عالم رياضيات وفلك وجغرافيا مسلم. يعتبر أبو علم الجبر والخوارزميات.",
-      image: "/src/assets/images/famous_scientists.jpg"
+      description:
+        "محمد بن موسى الخوارزمي، عالم رياضيات وفلك وجغرافيا مسلم. يعتبر أبو علم الجبر والخوارزميات.",
+      image: "/src/assets/images/famous_scientists.jpg",
     },
     {
       id: 3,
@@ -51,10 +53,11 @@ export function ScientistsSection() {
       achievements: [
         "أبو علم البصريات الحديث",
         "اختراع الكاميرا المظلمة",
-        "المنهج العلمي التجريبي"
+        "المنهج العلمي التجريبي",
       ],
-      description: "أبو علي الحسن بن الهيثم، عالم موسوعي مسلم قدم إسهامات كبيرة في الرياضيات والبصريات والفيزياء.",
-      image: "/src/assets/images/famous_scientists.jpg"
+      description:
+        "أبو علي الحسن بن الهيثم، عالم موسوعي مسلم قدم إسهامات كبيرة في الرياضيات والبصريات والفيزياء.",
+      image: "/src/assets/images/famous_scientists.jpg",
     },
     {
       id: 4,
@@ -67,10 +70,11 @@ export function ScientistsSection() {
       achievements: [
         "أول من فرق بين الجدري والحصبة",
         "استخدام الكحول في الطب",
-        "تطوير أدوات جراحية"
+        "تطوير أدوات جراحية",
       ],
-      description: "أبو بكر محمد بن زكريا الرازي، طبيب وكيميائي مسلم، يعتبر من أعظم أطباء الإنسانية.",
-      image: "/src/assets/images/famous_scientists.jpg"
+      description:
+        "أبو بكر محمد بن زكريا الرازي، طبيب وكيميائي مسلم، يعتبر من أعظم أطباء الإنسانية.",
+      image: "/src/assets/images/famous_scientists.jpg",
     },
     {
       id: 5,
@@ -83,10 +87,11 @@ export function ScientistsSection() {
       achievements: [
         "أبو الكيمياء",
         "اكتشاف حمض الكبريتيك",
-        "تطوير عمليات التقطير"
+        "تطوير عمليات التقطير",
       ],
-      description: "أبو موسى جابر بن حيان، كيميائي مسلم يعتبر مؤسس علم الكيمياء الحديث.",
-      image: "/src/assets/images/famous_scientists.jpg"
+      description:
+        "أبو موسى جابر بن حيان، كيميائي مسلم يعتبر مؤسس علم الكيمياء الحديث.",
+      image: "/src/assets/images/famous_scientists.jpg",
     },
     {
       id: 6,
@@ -99,27 +104,110 @@ export function ScientistsSection() {
       achievements: [
         "حساب محيط الأرض بدقة",
         "دراسة الثقافات المختلفة",
-        "تطوير طرق القياس الفلكي"
+        "تطوير طرق القياس الفلكي",
       ],
-      description: "أبو الريحان محمد بن أحمد البيروني، عالم موسوعي مسلم برع في الفلك والرياضيات والجغرافيا.",
-      image: "/src/assets/images/famous_scientists.jpg"
-    }
+      description:
+        "أبو الريحان محمد بن أحمد البيروني، عالم موسوعي مسلم برع في الفلك والرياضيات والجغرافيا.",
+      image: "/src/assets/images/famous_scientists.jpg",
+    },
+    {
+      id: 7,
+      name: "ابن حجر العسقلاني",
+      latinName: "Ibn Hajar al-Asqalani",
+      period: "1372-1449 م",
+      location: "مصر",
+      field: "الحديث النبوي",
+      category: "hadith",
+      achievements: [
+        "تأليف كتاب فتح الباري في شرح صحيح البخاري",
+        "تقويم رواة الحديث وتمييز الصحيح من الضعيف",
+        "نشر منهجية نقد الحديث وسنده ومتنِه",
+      ],
+      description:
+        "أحمد بن علي بن محمد بن حجر العسقلاني، من كبار علماء الحديث، اشتهر بدقته في نقد الأسانيد وشرحه لصحيح البخاري.",
+      image: "/src/assets/images/hadith_scholars.jpg",
+    },
+    {
+      id: 8,
+      name: "الإمام الشافعي",
+      latinName: "Imam Al-Shafi'i",
+      period: "767-820 م",
+      location: "مكة المكرمة، الحجاز",
+      field: "الفقه الإسلامي",
+      category: "fiqh",
+      achievements: [
+        "تأسيس المذهب الشافعي",
+        "تأليف كتاب الرسالة في أصول الفقه",
+        "الجمع بين مدرسة الرأي وأهل الحديث",
+      ],
+      description:
+        "محمد بن إدريس الشافعي، فقيه ومجتهد من كبار أئمة الإسلام، عرف ببلاغته في اللغة العربية وإرسائه لقواعد الفقه الإسلامي.",
+      image: "/src/assets/images/fiqh_scholars.jpg",
+    },
+    {
+      id: 9,
+      name: "الإمام الجويني",
+      latinName: "Imam Al-Juwayni",
+      period: "1028-1085 م",
+      location: "نيسابور، خراسان (إيران حاليًا)",
+      field: "أصول الفقه",
+      category: "usul",
+      achievements: [
+        "تأليف كتاب البرهان في أصول الفقه",
+        "تدريس كبار العلماء كالغزالي",
+        "تطوير منهجية الاستدلال الأصولي",
+      ],
+      description:
+        "عبد الملك بن عبد الله الجويني، أحد أعلام علم أصول الفقه، له تأثير بالغ في تأسيس منهج البحث الأصولي والمنطقي.",
+      image: "/src/assets/images/usul_scholars.jpg",
+    },
   ];
 
   const categories = [
-    { id: 'all', name: 'جميع المجالات', count: scientists.length },
-    { id: 'medicine', name: 'الطب', count: scientists.filter(s => s.category === 'medicine').length },
-    { id: 'mathematics', name: 'الرياضيات', count: scientists.filter(s => s.category === 'mathematics').length },
-    { id: 'physics', name: 'الفيزياء', count: scientists.filter(s => s.category === 'physics').length },
-    { id: 'chemistry', name: 'الكيمياء', count: scientists.filter(s => s.category === 'chemistry').length },
-    { id: 'fiqh', name: 'الفقه', count: scientists.filter(s => s.category === 'fiqh').length },
-    { id: 'hadith', name: 'الحديث', count: scientists.filter(s => s.category === 'hadith').length },
-    { id: 'usul', name: 'أصول', count: scientists.filter(s => s.category === 'usul').length }
+    { id: "all", name: "جميع المجالات", count: scientists.length },
+    {
+      id: "medicine",
+      name: "الطب",
+      count: scientists.filter((s) => s.category === "medicine").length,
+    },
+    {
+      id: "mathematics",
+      name: "الرياضيات",
+      count: scientists.filter((s) => s.category === "mathematics").length,
+    },
+    {
+      id: "physics",
+      name: "الفيزياء",
+      count: scientists.filter((s) => s.category === "physics").length,
+    },
+    {
+      id: "chemistry",
+      name: "الكيمياء",
+      count: scientists.filter((s) => s.category === "chemistry").length,
+    },
+    {
+      id: "fiqh",
+      name: "الفقه",
+      count: scientists.filter((s) => s.category === "fiqh").length,
+    },
+    {
+      id: "hadith",
+      name: "الحديث",
+      count: scientists.filter((s) => s.category === "hadith").length,
+    },
+    {
+      id: "usul",
+      name: "أصول",
+      count: scientists.filter((s) => s.category === "usul").length,
+    },
   ];
 
-  const filteredScientists = selectedCategory === 'all' 
-    ? scientists 
-    : scientists.filter(scientist => scientist.category === selectedCategory);
+  const filteredScientists =
+    selectedCategory === "all"
+      ? scientists
+      : scientists.filter(
+          (scientist) => scientist.category === selectedCategory
+        );
 
   return (
     <section id="scientists" className="py-20 bg-muted/30">
@@ -130,8 +218,8 @@ export function ScientistsSection() {
             عباقرة العلماء العرب
           </h2>
           <p className="text-lg text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-            تعرف على أعظم العقول العلمية في التاريخ العربي الإسلامي، الذين أرسوا أسس العلوم الحديثة 
-            وأثروا المعرفة الإنسانية بإنجازاتهم الخالدة
+            تعرف على أعظم العقول العلمية في التاريخ العربي الإسلامي، الذين أرسوا
+            أسس العلوم الحديثة وأثروا المعرفة الإنسانية بإنجازاتهم الخالدة
           </p>
         </div>
 
@@ -155,8 +243,8 @@ export function ScientistsSection() {
         {/* Scientists Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {filteredScientists.map((scientist, index) => (
-            <Card 
-              key={scientist.id} 
+            <Card
+              key={scientist.id}
               className="group hover:shadow-xl transition-all duration-300 hover:-translate-y-2 animate-fade-in-up"
               style={{ animationDelay: `${index * 0.1}s` }}
             >
@@ -174,7 +262,7 @@ export function ScientistsSection() {
                     </Badge>
                   </div>
                 </div>
-                
+
                 <div className="space-y-2 text-sm text-muted-foreground">
                   <div className="flex items-center gap-2">
                     <Calendar className="h-4 w-4" />
@@ -198,17 +286,22 @@ export function ScientistsSection() {
                     <span>أهم الإنجازات:</span>
                   </div>
                   <ul className="space-y-1">
-                    {scientist.achievements.slice(0, 2).map((achievement, idx) => (
-                      <li key={idx} className="text-sm text-muted-foreground flex items-start gap-2">
-                        <span className="text-secondary mt-1">•</span>
-                        <span>{achievement}</span>
-                      </li>
-                    ))}
+                    {scientist.achievements
+                      .slice(0, 2)
+                      .map((achievement, idx) => (
+                        <li
+                          key={idx}
+                          className="text-sm text-muted-foreground flex items-start gap-2"
+                        >
+                          <span className="text-secondary mt-1">•</span>
+                          <span>{achievement}</span>
+                        </li>
+                      ))}
                   </ul>
                 </div>
 
-                <Button 
-                  variant="ghost" 
+                <Button
+                  variant="ghost"
                   className="w-full mt-4 group-hover:bg-primary group-hover:text-primary-foreground transition-colors"
                 >
                   اقرأ المزيد
@@ -230,4 +323,3 @@ export function ScientistsSection() {
     </section>
   );
 }
-
