@@ -42,7 +42,7 @@ export function Footer() {
             <div className="lg:col-span-1">
               <div className="flex items-center space-x-2 rtl:space-x-reverse mb-6">
                 <BookOpen className="h-8 w-8 text-secondary" />
-                <span className="text-2xl font-bold">العلوم العربية</span>
+                <span className="text-2xl font-bold">مولانا</span>
               </div>
               <p className="text-primary-foreground/80 leading-relaxed mb-6">
                 منصة تعليمية تهدف إلى إحياء التراث العلمي العربي الإسلامي 
@@ -51,7 +51,7 @@ export function Footer() {
               
               {/* Social Links */}
               <div className="flex space-x-4 rtl:space-x-reverse">
-                <Button variant="ghost" size="icon" className="text-primary-foreground hover:text-secondary">
+                <Button variant="ghost" href="https://twitter.com" size="icon" className="text-primary-foreground hover:text-secondary">
                   <Twitter className="h-5 w-5" />
                 </Button>
                 <Button variant="ghost" size="icon" className="text-primary-foreground hover:text-secondary">
