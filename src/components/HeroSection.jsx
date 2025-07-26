@@ -14,7 +14,13 @@ export function HeroSection() {
   ]);
 
   useEffect(() => {
-    fetch("https://arabic-news-api.p.rapidapi.com/aljazeera")
+    fetch("https://arabic-news-api.p.rapidapi.com/aljazeera/hero-texts", {
+      method: "GET",
+      headers: {
+        "X-RapidAPI-Key": "e59a90d723mshb2eb8a8cf1c0541p163ef9jsn4568c798faf2", // <-- Put your API key here
+      "X-RapidAPI-Host": "arabic-news-api.p.rapidapi.com"
+    }
+  })
       .then((res) => res.json())
       .then((data) => {
         if (Array.isArray(data)) setHeroTexts(data);
