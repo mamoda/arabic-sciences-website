@@ -12,30 +12,61 @@ export function HeroSection() {
     "تعلم عن الاكتشافات التي غيرت مسار العلم في العالم",
     "انضم إلى مجتمعنا وشارك في إحياء التراث العلمي العربي"
   ]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetch("https://arabic-news-api.p.rapidapi.com/aljazeera/hero-texts", {
-      method: "GET",
-      headers: {
-        "X-RapidAPI-Key": "e59a90d723mshb2eb8a8cf1c0541p163ef9jsn4568c798faf2", // <-- Put your API key here
-      "X-RapidAPI-Host": "arabic-news-api.p.rapidapi.com"
-    }
-  })
-      .then((res) => res.json())
-      .then((data) => {
-        if (Array.isArray(data)) setHeroTexts(data);
-      })
-      .catch(() => {}); // Optional: handle error
+    const fetchHeroTexts = async () => {
+      try {
+        const response = await fetch("https://arabic-news-api.p.rapidapi.com/aljazeera/hero-texts", {
+          method: "GET",
+          headers: {
+            "X-RapidAPI-Key": "e59a90d723mshb2eb8a8cf1c0541p163ef9jsn4568c798faf2",
+            "X-RapidAPI-Host": "arabic-news-api.p.rapidapi.com"
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        if (Array.isArray(data) && data.length > 0) {
+          setHeroTexts(data);
+        }
+      } catch (error) {
+        console.error("Failed to fetch hero texts:", error);
+        setError("Failed to load dynamic content. Showing default messages.");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchHeroTexts();
   }, []);
 
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentText((prev) => (prev + 1) % heroTexts.length);
     }, 3000);
+    
     return () => clearInterval(interval);
-  }, []);
+  }, [heroTexts.length]); // Added dependency
 
-  const stats = [
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  return (
+    <section className="hero-section">
+      <div className="hero-text-container">
+        <h1>{heroTexts[currentText]}</h1>
+      </div>
+      {error && <p className="error-message">{error}</p>}
+    </section>
+  );
+
+const stats = [
     { icon: Star, number: "1000+", label: "عالم عربي" },
     { icon: Globe, number: "15", label: "مجال علمي" },
     { icon: BookOpen, number: "500+", label: "اكتشاف مهم" }
