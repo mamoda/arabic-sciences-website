@@ -3,15 +3,24 @@ import { ChevronDown, Star, Globe, BookOpen } from 'lucide-react';
 import { Button } from './ui/button';
 import { Card } from './ui/card';
 
+// ...existing code...
 export function HeroSection() {
   const [currentText, setCurrentText] = useState(0);
-  
-  const heroTexts = [
+  const [heroTexts, setHeroTexts] = useState([
     "المنصة الأولى في العلوم العربية والإسلامية في العالم و الشرق الأوسط من نوعها",
     "استكشف إنجازات العلماء العرب والمسلمين عبر العصور",
     "تعلم عن الاكتشافات التي غيرت مسار العلم في العالم",
     "انضم إلى مجتمعنا وشارك في إحياء التراث العلمي العربي"
-  ];
+  ]);
+
+  useEffect(() => {
+    fetch("https://arabic-news-api.p.rapidapi.com/aljazeera")
+      .then((res) => res.json())
+      .then((data) => {
+        if (Array.isArray(data)) setHeroTexts(data);
+      })
+      .catch(() => {}); // Optional: handle error
+  }, []);
 
   useEffect(() => {
     const interval = setInterval(() => {
