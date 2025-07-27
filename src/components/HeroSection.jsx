@@ -3,7 +3,6 @@ import { ChevronDown, Star, Globe, BookOpen } from 'lucide-react';
 import { Button } from './ui/button';
 import { Card } from './ui/card';
 
-// ...existing code...
 export function HeroSection() {
   const [currentText, setCurrentText] = useState(0);
   const [heroTexts, setHeroTexts] = useState([
@@ -14,18 +13,25 @@ export function HeroSection() {
   ]);
 
   useEffect(() => {
-    fetch("https://rapidapi.com/ruamazi/api/arabic-news-api/playground/apiendpoint_3d3745f2-da3d-4e34-8203-e2a6a1164864", {
+    fetch("https://arabic-news-api.p.rapidapi.com/aljazeera/hero-texts", {
       method: "GET",
       headers: {
         "X-RapidAPI-Key": "e59a90d723mshb2eb8a8cf1c0541p163ef9jsn4568c798faf2", // <-- Put your API key here
-      "X-RapidAPI-Host": "arabic-news-api.p.rapidapi.com"
-    }
-  })
+        "X-RapidAPI-Host": "arabic-news-api.p.rapidapi.com"
+      }
+    })
       .then((res) => res.json())
       .then((data) => {
-        if (Array.isArray(data)) setHeroTexts(data);
+        // If your API returns an array of strings, use it directly
+        if (Array.isArray(data)) {
+          setHeroTexts(data);
+        }
+        // If your API returns an object, adjust accordingly:
+        // Example: if (Array.isArray(data.texts)) setHeroTexts(data.texts);
       })
-      .catch(() => {}); // Optional: handle error
+      .catch((error) => {
+        console.error("API fetch error:", error);
+      });
   }, []);
 
   useEffect(() => {
@@ -33,8 +39,8 @@ export function HeroSection() {
       setCurrentText((prev) => (prev + 1) % heroTexts.length);
     }, 3000);
     return () => clearInterval(interval);
-  }, []);
-
+  }, [heroTexts]);
+  
   const stats = [
     { icon: Star, number: "1000+", label: "عالم عربي" },
     { icon: Globe, number: "15", label: "مجال علمي" },
