@@ -14,7 +14,7 @@ export function HeroSection() {
   ]);
 
   useEffect(() => {
-    fetch("https://arabic-news-api.p.rapidapi.com/aljazeera/hero-texts", {
+    fetch("https://rapidapi.com/ruamazi/api/arabic-news-api/playground/apiendpoint_3d3745f2-da3d-4e34-8203-e2a6a1164864", {
       method: "GET",
       headers: {
         "X-RapidAPI-Key": "e59a90d723mshb2eb8a8cf1c0541p163ef9jsn4568c798faf2", // <-- Put your API key here
