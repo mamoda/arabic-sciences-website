@@ -40,7 +40,7 @@ export function ScientistsSection() {
       ],
       description:
         "محمد بن موسى الخوارزمي، عالم رياضيات وفلك وجغرافيا مسلم. يعتبر أبو علم الجبر والخوارزميات.",
-      image: "/images/khwarizmy.jpeg",
+      image: "/images/khwarizmy.jpg",
     },
     {
       id: 3,
