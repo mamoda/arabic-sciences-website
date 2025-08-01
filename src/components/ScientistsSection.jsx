@@ -23,7 +23,7 @@ export function ScientistsSection() {
       ],
       description:
         "أبو علي الحسين بن عبد الله بن سينا، طبيب وفيلسوف مسلم من أعظم أطباء العالم. ألف أكثر من 200 كتاب في مختلف المجالات.",
-      image: "/src/assets/images/famous_scientists.jpg",
+      image: "/images/famous_scientists.jpg",
     },
     {
       id: 2,
@@ -40,7 +40,7 @@ export function ScientistsSection() {
       ],
       description:
         "محمد بن موسى الخوارزمي، عالم رياضيات وفلك وجغرافيا مسلم. يعتبر أبو علم الجبر والخوارزميات.",
-      image: "/src/assets/images/famous_scientists.jpg",
+      image: "/images/famous_scientists.jpg",
     },
     {
       id: 3,
@@ -57,7 +57,7 @@ export function ScientistsSection() {
       ],
       description:
         "أبو علي الحسن بن الهيثم، عالم موسوعي مسلم قدم إسهامات كبيرة في الرياضيات والبصريات والفيزياء.",
-      image: "/src/assets/images/famous_scientists.jpg",
+      image: "/images/famous_scientists.jpg",
     },
     {
       id: 4,
@@ -74,7 +74,7 @@ export function ScientistsSection() {
       ],
       description:
         "أبو بكر محمد بن زكريا الرازي، طبيب وكيميائي مسلم، يعتبر من أعظم أطباء الإنسانية.",
-      image: "/src/assets/images/famous_scientists.jpg",
+      image: "/images/famous_scientists.jpg",
     },
     {
       id: 5,
@@ -91,7 +91,7 @@ export function ScientistsSection() {
       ],
       description:
         "أبو موسى جابر بن حيان، كيميائي مسلم يعتبر مؤسس علم الكيمياء الحديث.",
-      image: "/src/assets/images/famous_scientists.jpg",
+      image: "/images/famous_scientists.jpg",
     },
     {
       id: 6,
@@ -108,7 +108,7 @@ export function ScientistsSection() {
       ],
       description:
         "أبو الريحان محمد بن أحمد البيروني، عالم موسوعي مسلم برع في الفلك والرياضيات والجغرافيا.",
-      image: "/src/assets/images/famous_scientists.jpg",
+      image: "/images/famous_scientists.jpg",
     },
     {
       id: 7,
@@ -125,7 +125,7 @@ export function ScientistsSection() {
       ],
       description:
         "أحمد بن علي بن محمد بن حجر العسقلاني، من كبار علماء الحديث، اشتهر بدقته في نقد الأسانيد وشرحه لصحيح البخاري.",
-      image: "/src/assets/images/hadith_scholars.jpg",
+      image: "/images/hadith_scholars.jpg",
     },
     {
       id: 8,
@@ -142,7 +142,7 @@ export function ScientistsSection() {
       ],
       description:
         "محمد بن إدريس الشافعي، فقيه ومجتهد من كبار أئمة الإسلام، عرف ببلاغته في اللغة العربية وإرسائه لقواعد الفقه الإسلامي.",
-      image: "/src/assets/images/fiqh_scholars.jpg",
+      image: "/images/fiqh_scholars.jpg",
     },
     {
       id: 9,
@@ -159,7 +159,7 @@ export function ScientistsSection() {
       ],
       description:
         "عبد الملك بن عبد الله الجويني، أحد أعلام علم أصول الفقه، له تأثير بالغ في تأسيس منهج البحث الأصولي والمنطقي.",
-      image: "/src/assets/images/usul_scholars.jpg",
+      image: "/images/usul_scholars.jpg",
     },
   ];
 
