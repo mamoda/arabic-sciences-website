@@ -74,7 +74,7 @@ export function ScientistsSection() {
       ],
       description:
         "أبو بكر محمد بن زكريا الرازي، طبيب وكيميائي مسلم، يعتبر من أعظم أطباء الإنسانية.",
-      image: "/images/famous_scientists.jpg",
+      image: "/images/razi.jpg",
     },
     {
       id: 5,
@@ -91,7 +91,7 @@ export function ScientistsSection() {
       ],
       description:
         "أبو موسى جابر بن حيان، كيميائي مسلم يعتبر مؤسس علم الكيمياء الحديث.",
-      image: "/images/famous_scientists.jpg",
+      image: "/images/Jābir_ibn_Ḥayyān.png",
     },
     {
       id: 6,
@@ -108,7 +108,7 @@ export function ScientistsSection() {
       ],
       description:
         "أبو الريحان محمد بن أحمد البيروني، عالم موسوعي مسلم برع في الفلك والرياضيات والجغرافيا.",
-      image: "/images/famous_scientists.jpg",
+      image: "/images/bayrony.jpg",
     },
     {
       id: 7,
@@ -125,7 +125,7 @@ export function ScientistsSection() {
       ],
       description:
         "أحمد بن علي بن محمد بن حجر العسقلاني، من كبار علماء الحديث، اشتهر بدقته في نقد الأسانيد وشرحه لصحيح البخاري.",
-      image: "/images/hadith_scholars.jpg",
+      image: "/images/ibn_hajar.jpg",
     },
     {
       id: 8,
@@ -142,7 +142,7 @@ export function ScientistsSection() {
       ],
       description:
         "محمد بن إدريس الشافعي، فقيه ومجتهد من كبار أئمة الإسلام، عرف ببلاغته في اللغة العربية وإرسائه لقواعد الفقه الإسلامي.",
-      image: "/images/fiqh_scholars.jpg",
+      image: "/images/Al-Shafie_Name.png",
     },
     {
       id: 9,
@@ -159,7 +159,7 @@ export function ScientistsSection() {
       ],
       description:
         "عبد الملك بن عبد الله الجويني، أحد أعلام علم أصول الفقه، له تأثير بالغ في تأسيس منهج البحث الأصولي والمنطقي.",
-      image: "/images/usul_scholars.jpg",
+      image: "/images/jwiny.webp",
     },
   ];
 
