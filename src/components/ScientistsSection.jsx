@@ -40,7 +40,7 @@ export function ScientistsSection() {
       ],
       description:
         "محمد بن موسى الخوارزمي، عالم رياضيات وفلك وجغرافيا مسلم. يعتبر أبو علم الجبر والخوارزميات.",
-      image: "/images/manuscripts.jpg",
+      image: "/images/manuscripts.jpeg",
     },
     {
       id: 3,
@@ -57,7 +57,7 @@ export function ScientistsSection() {
       ],
       description:
         "أبو علي الحسن بن الهيثم، عالم موسوعي مسلم قدم إسهامات كبيرة في الرياضيات والبصريات والفيزياء.",
-      image: "/images/muslim_scientists.jpg",
+      image: "/images/muslim_scientists.jpeg",
     },
     {
       id: 4,
