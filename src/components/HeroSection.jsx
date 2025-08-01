@@ -43,7 +43,7 @@ export function HeroSection() {
   
   const stats = [
     { icon: Star, number: "1000+", label: "عالم عربي" },
-    { icon: Globe, number: "15", label: "مجال علمي" },
+    { icon: Globe, number: "30+", label: "مجال علمي" },
     { icon: BookOpen, number: "500+", label: "اكتشاف مهم" }
   ];
 
