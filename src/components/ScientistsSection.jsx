@@ -42,8 +42,25 @@ export function ScientistsSection() {
         "محمد بن موسى الخوارزمي، عالم رياضيات وفلك وجغرافيا مسلم. يعتبر أبو علم الجبر والخوارزميات.",
       image: "/images/khwarizmy.jpg",
     },
-    {
+      {
       id: 3,
+      name: "ابن حجر العسقلاني",
+      latinName: "Ibn Hajar al-Asqalani",
+      period: "1372-1449 م",
+      location: "مصر",
+      field: "الحديث النبوي",
+      category: "hadith",
+      achievements: [
+        "تأليف كتاب فتح الباري في شرح صحيح البخاري",
+        "تقويم رواة الحديث وتمييز الصحيح من الضعيف",
+        "نشر منهجية نقد الحديث وسنده ومتنِه",
+      ],
+      description:
+        "أحمد بن علي بن محمد بن حجر العسقلاني، من كبار علماء الحديث، اشتهر بدقته في نقد الأسانيد وشرحه لصحيح البخاري.",
+      image: "/images/ibn_hajar.png",
+    },
+  {
+      id: 7,
       name: "ابن الهيثم",
       latinName: "Alhazen",
       period: "965-1040 م",
@@ -109,23 +126,6 @@ export function ScientistsSection() {
       description:
         "أبو الريحان محمد بن أحمد البيروني، عالم موسوعي مسلم برع في الفلك والرياضيات والجغرافيا.",
       image: "/images/bayrony.jpg",
-    },
-    {
-      id: 7,
-      name: "ابن حجر العسقلاني",
-      latinName: "Ibn Hajar al-Asqalani",
-      period: "1372-1449 م",
-      location: "مصر",
-      field: "الحديث النبوي",
-      category: "hadith",
-      achievements: [
-        "تأليف كتاب فتح الباري في شرح صحيح البخاري",
-        "تقويم رواة الحديث وتمييز الصحيح من الضعيف",
-        "نشر منهجية نقد الحديث وسنده ومتنِه",
-      ],
-      description:
-        "أحمد بن علي بن محمد بن حجر العسقلاني، من كبار علماء الحديث، اشتهر بدقته في نقد الأسانيد وشرحه لصحيح البخاري.",
-      image: "/images/ibn_hajar.png",
     },
     {
       id: 8,
