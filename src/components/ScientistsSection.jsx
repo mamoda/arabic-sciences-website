@@ -125,7 +125,7 @@ export function ScientistsSection() {
       ],
       description:
         "أحمد بن علي بن محمد بن حجر العسقلاني، من كبار علماء الحديث، اشتهر بدقته في نقد الأسانيد وشرحه لصحيح البخاري.",
-      image: "/images/ibn_hajar.jpg",
+      image: "/images/ibn_hajar.png",
     },
     {
       id: 8,
