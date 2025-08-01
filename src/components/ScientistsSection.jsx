@@ -251,6 +251,7 @@ export function ScientistsSection() {
               <CardHeader className="pb-4">
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
+                    <img src={scientist.image} alt={scientist.name} className="w-full h-32 object-cover rounded-md mb-3" />
                     <CardTitle className="text-xl mb-2 group-hover:text-primary transition-colors">
                       {scientist.name}
                     </CardTitle>
