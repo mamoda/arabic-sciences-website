@@ -23,7 +23,7 @@ export function ScientistsSection() {
       ],
       description:
         "أبو علي الحسين بن عبد الله بن سينا، طبيب وفيلسوف مسلم من أعظم أطباء العالم. ألف أكثر من 200 كتاب في مختلف المجالات.",
-      image: "/images/famous_scientists.jpg",
+      image: "/images/arab_scientists.jpg",
     },
     {
       id: 2,
@@ -40,7 +40,7 @@ export function ScientistsSection() {
       ],
       description:
         "محمد بن موسى الخوارزمي، عالم رياضيات وفلك وجغرافيا مسلم. يعتبر أبو علم الجبر والخوارزميات.",
-      image: "/images/famous_scientists.jpg",
+      image: "/images/manuscripts.jpg",
     },
     {
       id: 3,
@@ -57,7 +57,7 @@ export function ScientistsSection() {
       ],
       description:
         "أبو علي الحسن بن الهيثم، عالم موسوعي مسلم قدم إسهامات كبيرة في الرياضيات والبصريات والفيزياء.",
-      image: "/images/famous_scientists.jpg",
+      image: "/images/muslim_scientists.jpg",
     },
     {
       id: 4,
