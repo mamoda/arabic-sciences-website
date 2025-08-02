@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { Badge } from "./ui/badge";
 import { Button } from "./ui/button";
 import { Calendar, MapPin, Award, ChevronRight } from "lucide-react";
+import { Link } from "react-router-dom";
 
 export function ScientistsSection() {
   const [selectedCategory, setSelectedCategory] = useState("all");
@@ -251,8 +252,10 @@ export function ScientistsSection() {
               <CardHeader className="pb-4">
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
-                    <img src={scientist.image} alt={scientist.name} className="w-full h-32 object-cover rounded-md mb-3" />
-                    <CardTitle className="text-xl mb-2 group-hover:text-primary transition-colors">
+                    <Link to={`/scientist/${scientist.id}`}>
+                     <img src={scientist.image} alt={scientist.name} className="w-full h-32 object-cover rounded-md mb-3" />
+                    </Link>
+              <CardTitle className="text-xl mb-2 group-hover:text-primary transition-colors">
                       {scientist.name}
                     </CardTitle>
                     <p className="text-sm text-muted-foreground mb-2">
