@@ -197,7 +197,7 @@ export function ScientistDetail() {
 
 
   return (
-    <div className="container py-10 max-w-2xl mx-auto">
+    <div className="container py-10 max-w-2xl mx-auto text-right">
       <img src={scientist.image} alt={scientist.name} className="w-full rounded-lg mb-6" />
       <h1 className="text-3xl font-bold mb-2">{scientist.name}</h1>
       <p className="text-lg text-muted-foreground mb-2">{scientist.latinName}</p>
