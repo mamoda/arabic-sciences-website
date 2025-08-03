@@ -220,7 +220,7 @@ export function ScientistDetail() {
       </div>
       <p className="mb-4 text-right">{scientist.description}</p>
       <div>
-        <span className="font-semibold text-right">أهم الإنجازات:</span>
+        <span className="font-semibold text-right"> : أهم الإنجازات</span>
         <ul className=" pr-6 text-right">
           {scientist.achievements.map((ach, idx) => (
             <li key={idx}>{ach}</li>
