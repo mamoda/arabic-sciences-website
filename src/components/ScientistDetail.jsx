@@ -212,7 +212,7 @@ export function ScientistDetail() {
         <span className="font-semibold text-right">الفترة:</span>{" "}
         {scientist.period}
         <br />
-        <span className="font-semibold text-right">الموقع:</span>{" "}
+        <span className="mb-4 font-semibold text-right">الموقع:</span>{" "}
         {scientist.location}
         <br />
         <span className="font-semibold text-right">المجال:</span>{" "}
