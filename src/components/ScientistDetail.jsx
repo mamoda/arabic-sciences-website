@@ -199,19 +199,19 @@ export function ScientistDetail() {
   return (
     <div className="container py-10 max-w-2xl mx-auto text-right">
       <img src={scientist.image} alt={scientist.name} className="w-full rounded-lg mb-6" />
-      <h1 className="text-3xl font-bold mb-2">{scientist.name}</h1>
-      <p className="text-lg text-muted-foreground mb-2">{scientist.latinName}</p>
+      <h1 className="text-3xl font-bold mb-2 text-right">{scientist.name}</h1>
+      <p className="text-lg text-muted-foreground mb-2 text-right">{scientist.latinName}</p>
       <div className="mb-4">
-        <span className="font-semibold">الفترة:</span> {scientist.period}
+        <span className="font-semibold text-right">الفترة:</span> {scientist.period}
         <br />
-        <span className="font-semibold">الموقع:</span> {scientist.location}
+        <span className="font-semibold text-right">الموقع:</span> {scientist.location}
         <br />
-        <span className="font-semibold">المجال:</span> {scientist.field}
+        <span className="font-semibold text-right">المجال:</span> {scientist.field}
       </div>
-      <p className="mb-4">{scientist.description}</p>
+      <p className="mb-4 text-right">{scientist.description}</p>
       <div>
-        <span className="font-semibold">أهم الإنجازات:</span>
-        <ul className="list-disc pr-6">
+        <span className="font-semibold text-right">أهم الإنجازات:</span>
+        <ul className="list-disc pr-6 text-right">
           {scientist.achievements.map((ach, idx) => (
             <li key={idx}>{ach}</li>
           ))}
