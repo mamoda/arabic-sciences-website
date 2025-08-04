@@ -11,7 +11,7 @@ export function Login() {
   const handleSubmit = async e => {
     e.preventDefault();
     try {
-      const res = await axios.post("http://localhost:4000/api/login", { username, password });
+      const res = await axios.post("https://arabic-sciences-website.onrender.com/api/login", { username, password });
       localStorage.setItem("token", res.data.token);
       setMsg("تم تسجيل الدخول!");
       setTimeout(() => navigate("/profile"), 1000);

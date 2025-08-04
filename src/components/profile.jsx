@@ -6,7 +6,7 @@ export function Profile() {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    axios.get("http://localhost:4000/api/profile", {
+    axios.get("https://arabic-sciences-website.onrender.com/api/profile", {
       headers: { Authorization: `Bearer ${token}` }
     })
       .then(res => setProfile(res.data))

@@ -11,7 +11,7 @@ export function Register() {
   const handleSubmit = async e => {
     e.preventDefault();
     try {
-      await axios.post("http://localhost:4000/api/register", { username, password });
+      await axios.post("https://arabic-sciences-website.onrender.com/api/register", { username, password });
       setMsg("تم التسجيل بنجاح! يمكنك تسجيل الدخول الآن.");
       setTimeout(() => navigate("/login"), 1500);
     } catch (err) {
