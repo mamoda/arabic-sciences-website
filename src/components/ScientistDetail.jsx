@@ -293,7 +293,7 @@ export function ScientistDetail() {
     return (
       <div className="container py-10">
         <h2>العالم غير موجود</h2>
-        <Link to="/">العودة إلى الصفحة الرئيسية</Link>
+        <Link className="btn btn-primary" to="/">العودة إلى الصفحة الرئيسية</Link>
       </div>
     );
   }
