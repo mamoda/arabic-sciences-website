@@ -6,8 +6,10 @@ import { ScientistsSection } from './components/ScientistsSection'
 import { FieldsSection } from './components/FieldsSection'
 import { TimelineSection } from './components/TimelineSection'
 import { Footer } from './components/Footer'
-import { useParams } from "react-router-dom";
 import { ScientistDetail } from './components/ScientistDetail';
+import { Register } from "./pages/Register";
+import { Login } from "./pages/Login";
+import { Profile } from "./pages/Profile";
 
 function App() {
   return (
@@ -24,6 +26,9 @@ function App() {
             </>
           } />
         <Route path="/scientist/:id" element={<ScientistDetail />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/profile" element={<Profile />} />
         </Routes>
       </main>
       <Footer />
