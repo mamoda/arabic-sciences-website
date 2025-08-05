@@ -2,10 +2,15 @@ const express = require("express");
 const cors = require("cors");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
+const path = require("path");
 
+// Create an Express application
 const app = express();
 app.use(cors());
 app.use(express.json());
+
+
+app.use(express.static(path.join(__dirname, "../dist"))); // or "../build" for CRA
 
 const users = []; // In-memory user store
 
