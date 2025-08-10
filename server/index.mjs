@@ -3,25 +3,19 @@ import express from 'express';
 import cors from 'cors';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
-import { fileURLToPath } from 'url';
-import { dirname, join } from 'path';
+import path from 'path';
+import 'dotenv/config';
 
-fs.readFileSync('file.txt', 'utf8');
-// ✅ Create __dirname equivalent in ES Module
+// Create __dirname equivalent
 const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+const __dirname = path.dirname(__filename);
 
-// ✅ Now use join and __dirname — this removes "unused" errors
-const someFilePath = join(__dirname, 'data', 'users.json');
-console.log(someFilePath); // Example usage — replace with real use
-// Create an Express application
 const app = express();
 app.use(cors());
 app.use(express.json());
+app.use(express.static(path.join(__dirname, 'dist')));
 
-
-app.use(express.static(path.join(__dirname, "../dist"))); // or "../build" for CRA
-
+// ... rest of your code remains the same
 const users = []; // In-memory user store
 
 const SECRET = "your_jwt_secret";
