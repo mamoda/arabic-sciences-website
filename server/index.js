@@ -1,9 +1,19 @@
-const express = require("express");
-const cors = require("cors");
-const jwt = require("jsonwebtoken");
-const bcrypt = require("bcryptjs");
-const path = require("path");
+import fs from 'fs';
+import express from 'express';
+import cors from 'cors';
+import jwt from 'jsonwebtoken';
+import bcrypt from 'bcryptjs';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
 
+fs.readFileSync('file.txt', 'utf8');
+// ✅ Create __dirname equivalent in ES Module
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+// ✅ Now use join and __dirname — this removes "unused" errors
+const someFilePath = join(__dirname, 'data', 'users.json');
+console.log(someFilePath); // Example usage — replace with real use
 // Create an Express application
 const app = express();
 app.use(cors());
