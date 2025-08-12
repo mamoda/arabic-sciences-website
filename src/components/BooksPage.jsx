@@ -1,38 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { BookCard } from './BookCard';
-import { SearchBar } from './SearchBar';
-import { FilterDropdown } from './FilterDropdown';
-import { LoadingSpinner } from './LoadingSpinner';
+import { BookCard } from './ui/BookCard';
+import { SearchBar } from './ui/SearchBar';
+import { FilterDropdown } from './ui/FilterDropdown';
+import { LoadingSpinner } from './ui/LoadingSpinner';
 import { BookOpen, Filter } from 'lucide-react';
 
-interface Book {
-  id: string;
-  title: string;
-  author: string;
-  description: string;
-  field: string;
-  publishedYear: number;
-  pages: number;
-  fileSize: string;
-  downloadUrl: string;
-  coverImage: string;
-  rating: number;
-  downloads: number;
-}
-
-interface BooksPageProps {
-  field: string;
-}
-
-export const BooksPage: React.FC<BooksPageProps> = ({ field = "Computer Science" }) => {
-  const [books, setBooks] = useState<Book[]>([]);
-  const [filteredBooks, setFilteredBooks] = useState<Book[]>([]);
+export const BooksPage = ({ field = "Computer Science" }) => {
+  const [books, setBooks] = useState([]);
+  const [filteredBooks, setFilteredBooks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState('title');
 
   // Mock data - replace with actual API call
-  const mockBooks: Book[] = [
+  const mockBooks = [
     {
       id: '1',
       title: 'Advanced Machine Learning Algorithms',
@@ -47,7 +28,7 @@ export const BooksPage: React.FC<BooksPageProps> = ({ field = "Computer Science"
       rating: 4.8,
       downloads: 15420
     },
-    {
+   {
       id: '2',
       title: 'Quantum Computing Fundamentals',
       author: 'Prof. Michael Rodriguez',
@@ -117,7 +98,7 @@ export const BooksPage: React.FC<BooksPageProps> = ({ field = "Computer Science"
       rating: 4.8,
       downloads: 14230
     }
-  ];
+    ];
 
   useEffect(() => {
     // Simulate API call
