@@ -16,7 +16,7 @@ const scientists = [
     ],
     description:
       "أبو علي الحسين بن عبد الله بن سينا، طبيب وفيلسوف مسلم من أعظم أطباء العالم. ألف أكثر من 200 كتاب في مختلف المجالات.",
-    image: "/images/arab_scientists.jpg",
+    image: "/images/jwiny.webp",
   },
   {
     id: 2,
@@ -63,7 +63,7 @@ const scientists = [
     ],
     description:
       "محمد بن موسى الخوارزمي، عالم رياضيات وفلك وجغرافيا مسلم. يعتبر أبو علم الجبر والخوارزميات.",
-    image: "/images/khwarizmy.jpg",
+    image: "/images/jwiny.webp",
   },
   {
   id: 3,
@@ -136,7 +136,7 @@ const scientists = [
 ],
   description:
     "أحمد بن علي بن محمد بن حجر العسقلاني، من كبار علماء الحديث، اشتهر بدقته في نقد الأسانيد وشرحه لصحيح البخاري.",
-  image: "/images/ibn_hajar.png",
+  image: "/images/jwiny.webp",
 },
   {
     id: 4,
@@ -153,7 +153,7 @@ const scientists = [
     ],
     description:
       "أبو بكر محمد بن زكريا الرازي، طبيب وكيميائي مسلم، يعتبر من أعظم أطباء الإنسانية.",
-    image: "/images/razi.jpg",
+    image: "/images/jwiny.webp",
   },
   {
     id: 5,
@@ -194,7 +194,7 @@ const scientists = [
     ],
     description:
       "محمد بن إدريس الشافعي، فقيه ومجتهد من كبار أئمة الإسلام، عرف ببلاغته في اللغة العربية وإرسائه لقواعد أصول الفقه الإسلامي.",
-    image: "/images/Al-Shafie_Name.png",
+    image: "/images/jwiny.webp",
   },
   {
     id: 6,
@@ -211,7 +211,7 @@ const scientists = [
     ],
     description:
       "أبو الريحان محمد بن أحمد البيروني، عالم موسوعي مسلم برع في الفلك والرياضيات والجغرافيا.",
-    image: "/images/bayrony.jpg",
+    image: "/images/jwiny.webp",
   },
   {
     id: 7,
@@ -228,7 +228,7 @@ const scientists = [
     ],
     description:
       "أبو علي الحسن بن الهيثم، عالم موسوعي مسلم قدم إسهامات كبيرة في الرياضيات والبصريات والفيزياء.",
-    image: "/images/muslim_scientists.jpeg",
+    image: "/images/jwiny.webp",
   },
   {
     id: 8,
@@ -245,7 +245,7 @@ const scientists = [
     ],
     description:
       "أبو موسى جابر بن حيان، كيميائي مسلم يعتبر مؤسس علم الكيمياء الحديث.",
-    image: "/images/Jābir_ibn_Ḥayyān.png",
+    image: "/images/jwiny.webp",
   },
   {
     id: 9,
