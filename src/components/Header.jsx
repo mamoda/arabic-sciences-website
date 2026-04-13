@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { Menu, X, BookOpen, Search, Moon, Sun } from 'lucide-react';
 import { Button } from './ui/button';
-import { AnimatedAdButton } from './AnimatedAdButton';
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
