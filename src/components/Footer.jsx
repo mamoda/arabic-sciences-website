@@ -41,7 +41,7 @@ export function Footer() {
             {/* Brand Section */}
             <div className="lg:col-span-1">
               <div className="flex items-center gap-2 mb-6">
-                <img src="/logo.png" alt="مَــولَانَــا Logo" className="h-8 w-auto" />
+            <img src="/images/logo.svg" alt="Logo" className="h-30 w-30" />
               </div>
               <p className="text-gray-300 leading-relaxed mb-6">
                 منصة تعليمية تهدف إلى إحياء التراث العلمي العربي الإسلامي 
