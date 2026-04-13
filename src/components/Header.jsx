@@ -25,13 +25,12 @@ export function Header() {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <div className="flex items-center gap-2">
-            <BookOpen className="h-8 w-8 text-primary" />
-            <span className="text-xl font-bold text-foreground">مَــولَانَــا</span>
+          <div className="flex items-center space-x-2 rtl:space-x-reverse">
+            <img src="/images/logo.svg" alt="Logo" className="h-30 w-30" />
           </div>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center gap-8">
+          <nav className="hidden md:flex items-center space-x-8 rtl:space-x-reverse">
             {menuItems.map((item) => (
               <a
                 key={item.name}
@@ -44,7 +43,7 @@ export function Header() {
           </nav>
 
           {/* Right side buttons */}
-          <div className="flex items-center gap-4">
+          <div className="flex items-center space-x-4 rtl:space-x-reverse">
             <Button variant="ghost" size="icon" className="hidden sm:flex">
               <Search className="h-5 w-5" />
             </Button>
@@ -92,3 +91,4 @@ export function Header() {
     </header>
   );
 }
+
