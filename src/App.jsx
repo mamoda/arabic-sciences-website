@@ -18,7 +18,6 @@ function App() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Header />
-            <AnimatedAdButton />
       <main>
         <Routes>
           <Route path="/" element={
