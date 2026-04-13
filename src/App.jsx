@@ -7,7 +7,7 @@ import { FieldsSection } from './components/FieldsSection'
 import { TimelineSection } from './components/TimelineSection'
 import { Footer } from './components/Footer'
 import { ScientistDetail } from './components/ScientistDetail';
-import { Register } from "./components/Register";
+// import { Register } from "./components/Register";
 // import { Login } from "./components/Login";
 // import { Profile } from "./components/Profile";
 // import { BooksPage } from '/components/BooksPage';
