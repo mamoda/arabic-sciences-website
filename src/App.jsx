@@ -27,10 +27,6 @@ function App() {
             </>
           } />
         <Route path="/scientist/:id" element={<ScientistDetail />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/profile" element={<Profile />} />
-        <Route path="/books" element={<BooksPage />} />
         </Routes>
       </main>
       <Footer />
