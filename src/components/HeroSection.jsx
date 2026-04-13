@@ -44,9 +44,6 @@ export function HeroSection() {
 
       <div className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <div className="max-w-4xl mx-auto">
-          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white/90 mb-6 animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
-            منصة العلوم العربية والإسلامية
-          </h2>
           
           {/* Animated subtitle */}
           <div className="h-24 mb-6">
