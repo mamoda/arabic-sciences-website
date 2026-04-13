@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { ArrowLeft, Sparkles, Building2, Users, BarChart3, Calendar, Bell, ChevronLeft } from 'lucide-react';
-import { Button } from './ui/button';
 
 export function AnimatedAdButton() {
   const [isExpanded, setIsExpanded] = useState(false);
