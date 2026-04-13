@@ -51,15 +51,20 @@ export function HeroSection() {
           {/* Chat Box */}
           <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20 mb-6">
 
-            {/* Messages */}
-            <div className="h-64 overflow-y-auto mb-4 text-right space-y-2">
-              {messages.map((msg, i) => (
-                <div key={i} className={`${msg.role === "user" ? "text-white" : "text-green-300"}`}>
-                  <b>{msg.role === "user" ? "أنت" : "AI"}:</b> {msg.text}
-                </div>
-              ))}
-            </div>
-
+<div className="h-64 overflow-y-auto mb-4 space-y-2">
+  {messages.map((msg, i) => (
+    <div
+      key={i}
+      className={`p-2 rounded-lg max-w-[80%] ${
+        msg.role === "user"
+          ? "bg-white text-black ml-auto"
+          : "bg-green-600 text-white mr-auto"
+      }`}
+    >
+      {msg.text}
+    </div>
+  ))}
+</div>
             {/* Input */}
             <div className="flex gap-2">
               <input
