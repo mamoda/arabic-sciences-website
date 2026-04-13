@@ -112,14 +112,14 @@ export function Footer() {
 
         {/* Bottom Bar */}
         <div className="border-t border-gray-700 py-6">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+          <div className="flex flex-col md:flex-row items-right justify-between gap-4">
             <div className="text-gray-300 text-sm">
               © 2025 مَــولَانَــا - منصة العلوم العربية والإسلامية. جميع الحقوق محفوظة.
             </div>
             
             <div className="flex items-center gap-2 text-gray-300 text-sm">
-              <span>صُنع بـ</span>
               <Heart className="h-4 w-4 text-red-400" />
+              <span>صُنع بـ</span>
               <span>لإحياء التراث العلمي العربي</span>
             </div>
             
