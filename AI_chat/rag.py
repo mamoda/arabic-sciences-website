@@ -5,7 +5,7 @@ from chromadb.utils import embedding_functions
 chroma_client = chromadb.Client()
 
 embedding_function = embedding_functions.OpenAIEmbeddingFunction(
-    api_key="YOUR_API_KEY",
+    api_key="OPENAI_API_KEY",
     model_name="text-embedding-3-small"
 )
 

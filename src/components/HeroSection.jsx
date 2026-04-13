@@ -1,5 +1,5 @@
-import { useState, useEffect, useRef } from 'react';
-import { ChevronDown } from 'lucide-react';
+import { useState, useEffect, useRef } from "react";
+import { Send, Trash2, Sparkles } from "lucide-react";
 
 export function HeroSection() {
   const [question, setQuestion] = useState("");
@@ -8,22 +8,19 @@ export function HeroSection() {
 
   const chatRef = useRef(null);
 
-  // تحميل المحادثة من localStorage
   useEffect(() => {
     const saved = localStorage.getItem("chat_messages");
     if (saved) setMessages(JSON.parse(saved));
   }, []);
 
-  // حفظ المحادثة
   useEffect(() => {
     localStorage.setItem("chat_messages", JSON.stringify(messages));
   }, [messages]);
 
-  // scroll تلقائي
   useEffect(() => {
     chatRef.current?.scrollTo({
       top: chatRef.current.scrollHeight,
-      behavior: "smooth"
+      behavior: "smooth",
     });
   }, [messages, loading]);
 
@@ -39,25 +36,21 @@ export function HeroSection() {
     try {
       const res = await fetch("http://localhost:8000/chat", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ question: userMessage })
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ question: userMessage }),
       });
 
       const data = await res.json();
 
       setMessages((prev) => [
         ...prev,
-        {
-          role: "ai",
-          text: data.answer,
-          sources: data.sources || []
-        }
+        { role: "ai", text: data.answer || "لا يوجد رد" },
       ]);
-
-    } catch (error) {
-      console.error(error);
+    } catch (err) {
+      setMessages((prev) => [
+        ...prev,
+        { role: "ai", text: "حدث خطأ في الاتصال بالسيرفر" },
+      ]);
     }
 
     setLoading(false);
@@ -69,116 +62,101 @@ export function HeroSection() {
   };
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-16">
+    <section className="relative min-h-screen flex items-center justify-center bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 text-white px-4">
 
-      {/* Background */}
-      <div className="absolute inset-0 hero-gradient"></div>
-      <div className="absolute inset-0 arabic-pattern opacity-10"></div>
+      {/* Container */}
+      <div className="w-full max-w-3xl">
 
-      <div className="relative z-10 container mx-auto px-4 text-center">
-        <div className="max-w-3xl mx-auto">
-
-          {/* Title */}
-          <h1 className="text-3xl sm:text-5xl font-bold text-white mb-4">
-            اسأل الذكاء الاصطناعي
-          </h1>
-
-          <p className="text-white/80 mb-6">
-            مساعد متخصص في العلوم العربية والشرعية مع إجابات موثوقة ومصادر
-          </p>
-
-          {/* Chat Box */}
-          <div className="bg-white/10 backdrop-blur-xl rounded-2xl p-4 sm:p-6 border border-white/20 shadow-xl">
-
-            {/* Messages */}
-            <div
-              ref={chatRef}
-              className="h-80 overflow-y-auto mb-4 space-y-3 text-sm sm:text-base"
-            >
-              {messages.length === 0 && (
-                <div className="text-white/60 text-center">
-                  اكتب سؤالك وسيقوم الذكاء الاصطناعي بالإجابة
-                </div>
-              )}
-
-              {messages.map((msg, i) => (
-                <div key={i}>
-                  <div
-                    className={`flex ${
-                      msg.role === "user"
-                        ? "justify-end"
-                        : "justify-start"
-                    }`}
-                  >
-                    <div
-                      className={`px-4 py-2 rounded-xl max-w-[80%] ${
-                        msg.role === "user"
-                          ? "bg-white text-black"
-                          : "bg-gradient-to-r from-green-500 to-emerald-600 text-white"
-                      }`}
-                    >
-                      {msg.text}
-                    </div>
-                  </div>
-
-                  {/* المصادر */}
-                  {msg.sources && msg.sources.length > 0 && (
-                    <div className="text-right text-xs text-white/70 mt-1 px-2">
-                      📚 المصادر:
-                      {msg.sources.map((src, idx) => (
-                        <div key={idx}>- {src}</div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              ))}
-
-              {/* Loading */}
-              {loading && (
-                <div className="flex justify-start">
-                  <div className="bg-white/20 text-white px-4 py-2 rounded-xl animate-pulse">
-                    جاري التفكير...
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* Input */}
-            <div className="flex gap-2 mb-2">
-              <input
-                value={question}
-                onChange={(e) => setQuestion(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && sendMessage()}
-                placeholder="اكتب سؤالك هنا..."
-                className="flex-1 p-3 rounded-lg outline-none text-black"
-              />
-
-              <button
-                onClick={sendMessage}
-                className="bg-white text-primary px-6 rounded-lg hover:bg-white/90 transition"
-              >
-                إرسال
-              </button>
-            </div>
-
-            {/* أدوات */}
-            <div className="flex justify-between items-center text-sm text-white/70">
-              <button
-                onClick={clearChat}
-                className="hover:text-white transition"
-              >
-                مسح المحادثة
-              </button>
-
-              <span>مدعوم بالذكاء الاصطناعي</span>
-            </div>
+        {/* Header */}
+        <div className="text-center mb-6">
+          <div className="flex items-center justify-center gap-2 text-indigo-400 mb-2">
+            <Sparkles className="w-5 h-5" />
+            <span className="text-sm">AI Islamic Knowledge Assistant</span>
           </div>
 
+          <h1 className="text-3xl md:text-5xl font-bold">
+            اسأل في العلوم العربية والشرعية
+          </h1>
+
+          <p className="text-white/60 mt-3 text-sm md:text-base">
+            إجابات دقيقة مدعومة بنظام بحث ذكي (RAG)
+          </p>
         </div>
 
-        {/* Scroll indicator */}
-        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
-          <ChevronDown className="h-6 w-6 text-white/60" />
+        {/* Chat Card */}
+        <div className="bg-white/5 border border-white/10 rounded-2xl overflow-hidden backdrop-blur-xl shadow-2xl">
+
+          {/* Messages */}
+          <div
+            ref={chatRef}
+            className="h-[420px] overflow-y-auto p-4 space-y-3"
+          >
+            {messages.length === 0 && (
+              <div className="text-center text-white/40 mt-20">
+                ابدأ بسؤال عن أي موضوع في العلوم العربية أو الشرعية
+              </div>
+            )}
+
+            {messages.map((msg, i) => (
+              <div
+                key={i}
+                className={`flex ${
+                  msg.role === "user" ? "justify-end" : "justify-start"
+                }`}
+              >
+                <div
+                  className={`px-4 py-3 rounded-2xl text-sm leading-relaxed max-w-[80%] shadow-md ${
+                    msg.role === "user"
+                      ? "bg-indigo-500 text-white rounded-br-sm"
+                      : "bg-white/10 text-white rounded-bl-sm border border-white/10"
+                  }`}
+                >
+                  {msg.text}
+                </div>
+              </div>
+            ))}
+
+            {loading && (
+              <div className="flex justify-start">
+                <div className="px-4 py-3 rounded-2xl bg-white/10 text-white/60 animate-pulse">
+                  جاري التفكير...
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Input */}
+          <div className="border-t border-white/10 p-3 flex gap-2 bg-black/20">
+
+            <input
+              value={question}
+              onChange={(e) => setQuestion(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && sendMessage()}
+              placeholder="اكتب سؤالك..."
+              className="flex-1 bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white outline-none focus:border-indigo-500"
+            />
+
+            <button
+              onClick={sendMessage}
+              className="bg-indigo-500 hover:bg-indigo-600 transition px-4 rounded-xl flex items-center gap-2"
+            >
+              <Send className="w-4 h-4" />
+            </button>
+          </div>
+
+          {/* Footer actions */}
+          <div className="flex justify-between items-center px-4 py-3 text-xs text-white/40">
+            <button
+              onClick={clearChat}
+              className="flex items-center gap-1 hover:text-white transition"
+            >
+              <Trash2 className="w-3 h-3" />
+              مسح المحادثة
+            </button>
+
+            <span>Powered by RAG + OpenAI</span>
+          </div>
+
         </div>
       </div>
     </section>
