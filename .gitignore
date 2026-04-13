@@ -1,4 +1,7 @@
 node_modules
 .env
-__pycache__
-venv
+venv/
+__pycache__/
+*.log
+*.pyc
+*.env
