@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Menu, X, BookOpen, Search, Moon, Sun } from 'lucide-react';
 import { Button } from './ui/button';
+import { AnimatedAdButton } from './AnimatedAdButton';
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -24,12 +25,10 @@ export function Header() {
     <header className="fixed top-0 w-full bg-background/95 backdrop-blur-sm border-b border-border z-50">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          {/* Logo */}
           <div className="flex items-center space-x-2 rtl:space-x-reverse">
             <img src="/images/logo.svg" alt="Logo" className="h-36 w-36" />
           </div>
 
-          {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8 rtl:space-x-reverse">
             {menuItems.map((item) => (
               <a
@@ -42,7 +41,6 @@ export function Header() {
             ))}
           </nav>
 
-          {/* Right side buttons */}
           <div className="flex items-center space-x-4 rtl:space-x-reverse">
             <Button variant="ghost" size="icon" className="hidden sm:flex">
               <Search className="h-5 w-5" />
@@ -52,7 +50,6 @@ export function Header() {
               {isDark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
             </Button>
 
-            {/* Mobile menu button */}
             <Button
               variant="ghost"
               size="icon"
@@ -64,7 +61,6 @@ export function Header() {
           </div>
         </div>
 
-        {/* Mobile Navigation */}
         {isMenuOpen && (
           <div className="md:hidden">
             <div className="px-2 pt-2 pb-3 space-y-1 bg-card border-t border-border">
@@ -91,4 +87,3 @@ export function Header() {
     </header>
   );
 }
-

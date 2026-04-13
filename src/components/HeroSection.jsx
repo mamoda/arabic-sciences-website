@@ -3,6 +3,7 @@ import { ChevronDown, Star, Globe, BookOpen } from 'lucide-react';
 import { Button } from './ui/button';
 import { Card } from './ui/card';
 
+
 export function HeroSection() {
   const [currentText, setCurrentText] = useState(0);
   const heroTexts = [
