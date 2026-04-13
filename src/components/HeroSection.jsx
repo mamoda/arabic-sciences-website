@@ -12,27 +12,6 @@ export function HeroSection() {
     "انضم إلى مجتمعنا وشارك في إحياء التراث العلمي العربي"
   ]);
 
-  useEffect(() => {
-    fetch("https://arabic-news-api.p.rapidapi.com/aljazeera/hero-texts", {
-      method: "GET",
-      headers: {
-        "X-RapidAPI-Key": "e59a90d723mshb2eb8a8cf1c0541p163ef9jsn4568c798faf2", // <-- Put your API key here
-        "X-RapidAPI-Host": "arabic-news-api.p.rapidapi.com"
-      }
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        // If your API returns an array of strings, use it directly
-        if (Array.isArray(data)) {
-          setHeroTexts(data);
-        }
-        // If your API returns an object, adjust accordingly:
-        // Example: if (Array.isArray(data.texts)) setHeroTexts(data.texts);
-      })
-      .catch((error) => {
-        console.error("API fetch error:", error);
-      });
-  }, []);
 
   useEffect(() => {
     const interval = setInterval(() => {
