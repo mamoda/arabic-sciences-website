@@ -71,16 +71,7 @@ export function HeroSection() {
         <div className="text-center mb-6">
           <div className="flex items-center justify-center gap-2 text-indigo-400 mb-2">
             <Sparkles className="w-5 h-5" />
-            <span className="text-sm">AI Islamic Knowledge Assistant</span>
           </div>
-
-          <h1 className="text-3xl md:text-5xl font-bold">
-            اسأل في العلوم العربية والشرعية
-          </h1>
-
-          <p className="text-white/60 mt-3 text-sm md:text-base">
-            إجابات دقيقة مدعومة بنظام بحث ذكي (RAG)
-          </p>
         </div>
 
         {/* Chat Card */}
