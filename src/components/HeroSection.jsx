@@ -46,8 +46,6 @@ export function HeroSection() {
         <div className="max-w-4xl mx-auto">
           {/* Main heading */}
           <h1 className="text-3xl sm:text-5xl lg:text-7xl font-bold text-white mb-6 animate-fade-in-up leading-tight">
-            مَــولَانَــا
-            <br />
             <span className="text-2xl sm:text-3xl lg:text-4xl block mt-2">
               منصة العلوم العربية والإسلامية
             </span>
