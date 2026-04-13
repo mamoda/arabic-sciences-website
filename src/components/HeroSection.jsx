@@ -46,7 +46,7 @@ export function HeroSection() {
       <div className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <div className="max-w-4xl mx-auto">
           {/* Main heading */}
-          <h1 className="text-4xl sm:text-5xl lg:text-7xl font-bold text-white mb-6 animate-fade-in-up">
+          <h1 className="text-xl sm:text-5xl lg:text-7xl font-bold text-white mb-6 animate-fade-in-up">
              مَــولانَــا - منصة العلوم العربية والإسلامية
           </h1>
           
