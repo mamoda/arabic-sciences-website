@@ -1,13 +1,13 @@
-import { useState } from "react";
+import { useState } from 'react';
+import { ChevronDown } from 'lucide-react';
 
-export default function Chat() {
+export function HeroSection() {
   const [question, setQuestion] = useState("");
   const [messages, setMessages] = useState([]);
 
   const sendMessage = async () => {
     if (!question) return;
 
-    // ضيف سؤال المستخدم
     setMessages((prev) => [...prev, { role: "user", text: question }]);
 
     try {
@@ -21,7 +21,6 @@ export default function Chat() {
 
       const data = await res.json();
 
-      // ضيف رد AI
       setMessages((prev) => [
         ...prev,
         { role: "ai", text: data.answer }
@@ -35,28 +34,57 @@ export default function Chat() {
   };
 
   return (
-    <div>
-      <h2>AI Assistant</h2>
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-16">
+      
+      {/* Background */}
+      <div className="absolute inset-0 hero-gradient"></div>
+      <div className="absolute inset-0 arabic-pattern opacity-10"></div>
 
-      {/* عرض الرسائل */}
-      <div>
-        {messages.map((msg, i) => (
-          <div key={i}>
-            <b>{msg.role === "user" ? "أنت" : "AI"}:</b> {msg.text}
+      <div className="relative z-10 container mx-auto px-4 text-center">
+        <div className="max-w-3xl mx-auto">
+
+          {/* Title */}
+          <h1 className="text-3xl sm:text-5xl font-bold text-white mb-6">
+            اسأل في العلوم العربية والشرعية
+          </h1>
+
+          {/* Chat Box */}
+          <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20 mb-6">
+
+            {/* Messages */}
+            <div className="h-64 overflow-y-auto mb-4 text-right space-y-2">
+              {messages.map((msg, i) => (
+                <div key={i} className={`${msg.role === "user" ? "text-white" : "text-green-300"}`}>
+                  <b>{msg.role === "user" ? "أنت" : "AI"}:</b> {msg.text}
+                </div>
+              ))}
+            </div>
+
+            {/* Input */}
+            <div className="flex gap-2">
+              <input
+                value={question}
+                onChange={(e) => setQuestion(e.target.value)}
+                placeholder="اكتب سؤالك..."
+                className="flex-1 p-3 rounded-lg outline-none"
+              />
+
+              <button
+                onClick={sendMessage}
+                className="bg-white text-primary px-6 rounded-lg"
+              >
+                إرسال
+              </button>
+            </div>
           </div>
-        ))}
+
+        </div>
+
+        {/* Scroll indicator */}
+        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
+          <ChevronDown className="h-6 w-6 text-white/60" />
+        </div>
       </div>
-
-      {/* input */}
-      <input
-        value={question}
-        onChange={(e) => setQuestion(e.target.value)}
-        placeholder="اكتب سؤالك..."
-      />
-
-      <button onClick={sendMessage}>
-        إرسال
-      </button>
-    </div>
+    </section>
   );
 }
