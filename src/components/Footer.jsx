@@ -114,7 +114,7 @@ export function Footer() {
         <div className="border-t border-gray-700 py-6">
           <div className="flex flex-col md:flex-row items-right justify-between gap-4">
             <div className="text-gray-300 text-sm">
-              © 2025 مَــولَانَــا - منصة العلوم العربية والإسلامية. جميع الحقوق محفوظة.
+              © 2025 مَــولَانَــا - منصة العلوم العربية والإسلامية. جميع الحقوق محفوظة
             </div>
             
             <div className="flex items-center gap-2 text-gray-300 text-sm">
