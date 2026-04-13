@@ -12,7 +12,6 @@ export function HeroSection() {
     "انضم إلى مجتمعنا وشارك في إحياء التراث العلمي العربي"
   ]);
 
-
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentText((prev) => (prev + 1) % heroTexts.length);
@@ -27,7 +26,7 @@ export function HeroSection() {
   ];
 
   return (
-    <section id="home" className="relative min-h-screen flex items-center justify-center overflow-hidden">
+    <section id="home" className="relative min-h-[calc(100vh-80px)] flex items-center justify-center overflow-hidden pt-20">
       {/* Background */}
       <div className="absolute inset-0 hero-gradient"></div>
       <div className="absolute inset-0 arabic-pattern opacity-10"></div>
@@ -46,41 +45,45 @@ export function HeroSection() {
       <div className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <div className="max-w-4xl mx-auto">
           {/* Main heading */}
-          <h1 className="text-xl sm:text-5xl lg:text-7xl font-bold text-white mb-6 animate-fade-in-up">
-             مَــولانَــا - منصة العلوم العربية والإسلامية
+          <h1 className="text-3xl sm:text-5xl lg:text-7xl font-bold text-white mb-6 animate-fade-in-up leading-tight">
+            مَــولَانَــا
+            <br />
+            <span className="text-2xl sm:text-3xl lg:text-4xl block mt-2">
+              منصة العلوم العربية والإسلامية
+            </span>
           </h1>
           
           {/* Animated subtitle */}
-          <div className="h-16 mb-8">
-            <p className="text-xl sm:text-2xl lg:text-3xl text-white/90 animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
+          <div className="h-20 mb-8">
+            <p className="text-lg sm:text-2xl lg:text-3xl text-white/90 animate-fade-in-up px-4" style={{ animationDelay: '0.2s' }}>
               {heroTexts[currentText]}
             </p>
           </div>
 
           {/* Description */}
-          <p className="text-lg sm:text-xl text-white/80 mb-12 max-w-2xl mx-auto leading-relaxed animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
+          <p className="text-base sm:text-xl text-white/80 mb-12 max-w-2xl mx-auto leading-relaxed animate-fade-in-up px-4" style={{ animationDelay: '0.4s' }}>
             انطلق في رحلة استكشافية عبر التاريخ لتتعرف على إنجازات العلماء العرب والمسلمين 
             الذين أضاءوا طريق العلم والمعرفة للبشرية جمعاء
           </p>
 
           {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16 animate-fade-in-up" style={{ animationDelay: '0.6s' }}>
-            <Button size="lg" className="bg-white text-primary hover:bg-white/90 text-lg px-8 py-3">
+          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16 animate-fade-in-up px-4" style={{ animationDelay: '0.6s' }}>
+            <Button size="lg" className="bg-white text-primary hover:bg-white/90 text-base sm:text-lg px-6 sm:px-8 py-3">
               ابدأ الاستكشاف
             </Button>
-            <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-primary text-lg px-8 py-3">
+            <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-primary text-base sm:text-lg px-6 sm:px-8 py-3">
               تعرف على العلماء
             </Button>
           </div>
 
           {/* Stats */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-2xl mx-auto animate-fade-in-up" style={{ animationDelay: '0.8s' }}>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 max-w-2xl mx-auto px-4 animate-fade-in-up" style={{ animationDelay: '0.8s' }}>
             {stats.map((stat, index) => (
-              <Card key={index} className="bg-white/10 backdrop-blur-sm border-white/20 text-white p-6">
+              <Card key={index} className="bg-white/10 backdrop-blur-sm border-white/20 text-white p-4 sm:p-6">
                 <div className="flex flex-col items-center">
-                  <stat.icon className="h-8 w-8 mb-3 text-secondary" />
-                  <div className="text-2xl font-bold mb-1">{stat.number}</div>
-                  <div className="text-sm text-white/80">{stat.label}</div>
+                  <stat.icon className="h-6 w-6 sm:h-8 sm:w-8 mb-2 sm:mb-3 text-secondary" />
+                  <div className="text-xl sm:text-2xl font-bold mb-1">{stat.number}</div>
+                  <div className="text-xs sm:text-sm text-white/80">{stat.label}</div>
                 </div>
               </Card>
             ))}
@@ -89,10 +92,9 @@ export function HeroSection() {
 
         {/* Scroll indicator */}
         <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
-          <ChevronDown className="h-8 w-8 text-white/60" />
+          <ChevronDown className="h-6 w-6 sm:h-8 sm:w-8 text-white/60" />
         </div>
       </div>
     </section>
   );
 }
-
