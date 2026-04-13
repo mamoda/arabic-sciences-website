@@ -5,12 +5,12 @@ import { Card } from './ui/card';
 
 export function HeroSection() {
   const [currentText, setCurrentText] = useState(0);
-  const [heroTexts, setHeroTexts] = useState([
-    "المنصة الأولى في العلوم العربية والإسلامية في العالم و الشرق الأوسط من نوعها",
+  const heroTexts = [
+    "المنصة الأولى في العلوم العربية والإسلامية في العالم والشرق الأوسط من نوعها",
     "استكشف إنجازات العلماء العرب والمسلمين عبر العصور",
     "تعلم عن الاكتشافات التي غيرت مسار العلم في العالم",
     "انضم إلى مجتمعنا وشارك في إحياء التراث العلمي العربي"
-  ]);
+  ];
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -26,7 +26,7 @@ export function HeroSection() {
   ];
 
   return (
-    <section id="home" className="relative min-h-[calc(100vh-80px)] flex items-center justify-center overflow-hidden pt-20">
+    <section id="home" className="relative min-h-screen flex items-center justify-center overflow-hidden pt-16">
       {/* Background */}
       <div className="absolute inset-0 hero-gradient"></div>
       <div className="absolute inset-0 arabic-pattern opacity-10"></div>
@@ -45,31 +45,32 @@ export function HeroSection() {
       <div className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <div className="max-w-4xl mx-auto">
           {/* Main heading */}
-          <h1 className="text-3xl sm:text-5xl lg:text-7xl font-bold text-white mb-6 animate-fade-in-up leading-tight">
-            <span className="text-2xl sm:text-3xl lg:text-4xl block mt-2">
-              منصة العلوم العربية والإسلامية
-            </span>
+          <h1 className="text-4xl sm:text-6xl lg:text-7xl font-bold text-white mb-4 animate-fade-in-up">
+            مَــولَانَــا
           </h1>
+          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white/90 mb-6 animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
+            منصة العلوم العربية والإسلامية
+          </h2>
           
           {/* Animated subtitle */}
-          <div className="h-20 mb-8">
-            <p className="text-lg sm:text-2xl lg:text-3xl text-white/90 animate-fade-in-up px-4" style={{ animationDelay: '0.2s' }}>
+          <div className="h-24 mb-8">
+            <p className="text-lg sm:text-xl lg:text-2xl text-white/90 animate-fade-in-up px-4" style={{ animationDelay: '0.2s' }}>
               {heroTexts[currentText]}
             </p>
           </div>
 
           {/* Description */}
-          <p className="text-base sm:text-xl text-white/80 mb-12 max-w-2xl mx-auto leading-relaxed animate-fade-in-up px-4" style={{ animationDelay: '0.4s' }}>
+          <p className="text-base sm:text-lg text-white/80 mb-12 max-w-2xl mx-auto leading-relaxed animate-fade-in-up px-4" style={{ animationDelay: '0.4s' }}>
             انطلق في رحلة استكشافية عبر التاريخ لتتعرف على إنجازات العلماء العرب والمسلمين 
             الذين أضاءوا طريق العلم والمعرفة للبشرية جمعاء
           </p>
 
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16 animate-fade-in-up px-4" style={{ animationDelay: '0.6s' }}>
-            <Button size="lg" className="bg-white text-primary hover:bg-white/90 text-base sm:text-lg px-6 sm:px-8 py-3">
+            <Button size="lg" className="bg-white text-primary hover:bg-white/90 text-base sm:text-lg px-8 py-6">
               ابدأ الاستكشاف
             </Button>
-            <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-primary text-base sm:text-lg px-6 sm:px-8 py-3">
+            <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-primary text-base sm:text-lg px-8 py-6">
               تعرف على العلماء
             </Button>
           </div>

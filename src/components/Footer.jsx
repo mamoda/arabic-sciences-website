@@ -33,34 +33,34 @@ export function Footer() {
   ];
 
   return (
-    <footer className="bg-primary text-primary-foreground">
+    <footer className="bg-gradient-to-br from-gray-900 to-gray-800 text-white">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         {/* Main Footer Content */}
         <div className="py-16">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {/* Brand Section */}
             <div className="lg:col-span-1">
-              <div className="flex items-center space-x-2 rtl:space-x-reverse mb-6">
+              <div className="flex items-center gap-2 mb-6">
                 <BookOpen className="h-8 w-8 text-secondary" />
-                <span className="text-2xl font-bold">مولانا</span>
+                <span className="text-2xl font-bold">مَــولَانَــا</span>
               </div>
-              <p className="text-primary-foreground/80 leading-relaxed mb-6">
+              <p className="text-gray-300 leading-relaxed mb-6">
                 منصة تعليمية تهدف إلى إحياء التراث العلمي العربي الإسلامي 
                 وتعريف الأجيال الجديدة بإنجازات علمائنا العظام.
               </p>
               
               {/* Social Links */}
-              <div className="flex space-x-4 rtl:space-x-reverse">
-                <Button variant="ghost" href="https://twitter.com" size="icon" className="text-primary-foreground hover:text-secondary">
+              <div className="flex gap-4">
+                <Button variant="ghost" size="icon" className="text-gray-300 hover:text-secondary hover:bg-gray-800">
                   <Twitter className="h-5 w-5" />
                 </Button>
-                <Button variant="ghost" size="icon" className="text-primary-foreground hover:text-secondary">
+                <Button variant="ghost" size="icon" className="text-gray-300 hover:text-secondary hover:bg-gray-800">
                   <Facebook className="h-5 w-5" />
                 </Button>
-                <Button variant="ghost" size="icon" className="text-primary-foreground hover:text-secondary">
+                <Button variant="ghost" size="icon" className="text-gray-300 hover:text-secondary hover:bg-gray-800">
                   <Github className="h-5 w-5" />
                 </Button>
-                <Button variant="ghost" size="icon" className="text-primary-foreground hover:text-secondary">
+                <Button variant="ghost" size="icon" className="text-gray-300 hover:text-secondary hover:bg-gray-800">
                   <Mail className="h-5 w-5" />
                 </Button>
               </div>
@@ -77,7 +77,7 @@ export function Footer() {
                     <li key={linkIndex}>
                       <a
                         href={link.href}
-                        className="text-primary-foreground/80 hover:text-secondary transition-colors duration-200"
+                        className="text-gray-300 hover:text-secondary transition-colors duration-200"
                       >
                         {link.name}
                       </a>
@@ -90,19 +90,19 @@ export function Footer() {
         </div>
 
         {/* Newsletter Section */}
-        <div className="border-t border-primary-foreground/20 py-8">
+        <div className="border-t border-gray-700 py-8">
           <div className="max-w-2xl mx-auto text-center">
             <h3 className="text-xl font-semibold mb-4">
               اشترك في النشرة الإخبارية
             </h3>
-            <p className="text-primary-foreground/80 mb-6">
+            <p className="text-gray-300 mb-6">
               احصل على آخر المقالات والاكتشافات العلمية مباشرة في بريدك الإلكتروني
             </p>
             <div className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
               <input
                 type="email"
                 placeholder="أدخل بريدك الإلكتروني"
-                className="flex-1 px-4 py-2 rounded-lg bg-primary-foreground/10 border border-primary-foreground/20 text-primary-foreground placeholder:text-primary-foreground/60 focus:outline-none focus:ring-2 focus:ring-secondary"
+                className="flex-1 px-4 py-2 rounded-lg bg-gray-800 border border-gray-600 text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-secondary"
               />
               <Button variant="secondary" className="px-6">
                 اشتراك
@@ -112,26 +112,26 @@ export function Footer() {
         </div>
 
         {/* Bottom Bar */}
-        <div className="border-t border-primary-foreground/20 py-6">
+        <div className="border-t border-gray-700 py-6">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-            <div className="text-primary-foreground/80 text-sm">
-              © 2025 العلوم العربية. جميع الحقوق محفوظة.
+            <div className="text-gray-300 text-sm">
+              © 2025 مَــولَانَــا - منصة العلوم العربية والإسلامية. جميع الحقوق محفوظة.
             </div>
             
-            <div className="flex items-center gap-2 text-primary-foreground/80 text-sm">
+            <div className="flex items-center gap-2 text-gray-300 text-sm">
               <span>صُنع بـ</span>
               <Heart className="h-4 w-4 text-red-400" />
               <span>لإحياء التراث العلمي العربي</span>
             </div>
             
             <div className="flex items-center gap-4 text-sm">
-              <a href="#privacy" className="text-primary-foreground/80 hover:text-secondary transition-colors">
+              <a href="#privacy" className="text-gray-300 hover:text-secondary transition-colors">
                 الخصوصية
               </a>
-              <a href="#terms" className="text-primary-foreground/80 hover:text-secondary transition-colors">
+              <a href="#terms" className="text-gray-300 hover:text-secondary transition-colors">
                 الشروط
               </a>
-              <a href="#sitemap" className="text-primary-foreground/80 hover:text-secondary transition-colors">
+              <a href="#sitemap" className="text-gray-300 hover:text-secondary transition-colors">
                 خريطة الموقع
               </a>
             </div>
@@ -141,4 +141,3 @@ export function Footer() {
     </footer>
   );
 }
-
