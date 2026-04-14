@@ -3,10 +3,22 @@ from pydantic import BaseModel
 import requests
 import os
 from dotenv import load_dotenv
+from fastapi.middleware.cors import CORSMiddleware
 
 load_dotenv()
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:5173",
+        "https://arabic-sciences-website.vercel.app"
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 class Question(BaseModel):
     question: str
@@ -16,6 +28,9 @@ GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 @app.post("/chat")
 def chat(q: Question):
     try:
+        if not GROQ_API_KEY:
+            return {"answer": "❌ GROQ_API_KEY غير موجود في ملف .env"}
+
         response = requests.post(
             "https://api.groq.com/openai/v1/chat/completions",
             headers={
@@ -35,8 +50,21 @@ def chat(q: Question):
                     }
                 ],
                 "temperature": 0.7
-            }
+            },
+            timeout=30
         )
+
+        # 🔍 مهم جدًا: اعرض أي خطأ من السيرفر
+        print("STATUS CODE:", response.status_code)
+        print("RESPONSE TEXT:", response.text)
+
+        # لو في error من Groq
+        if response.status_code != 200:
+            return {
+                "answer": "❌ خطأ من API",
+                "status_code": response.status_code,
+                "details": response.text
+            }
 
         data = response.json()
 
@@ -44,5 +72,10 @@ def chat(q: Question):
             "answer": data["choices"][0]["message"]["content"]
         }
 
+    except requests.exceptions.RequestException as e:
+        print("REQUEST ERROR:", str(e))
+        return {"answer": f"❌ خطأ في الاتصال بالشبكة: {str(e)}"}
+
     except Exception as e:
-        return {"answer": "حدث خطأ في الاتصال"}
+        print("GENERAL ERROR:", str(e))
+        return {"answer": f"❌ خطأ غير متوقع: {str(e)}"}
