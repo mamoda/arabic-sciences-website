@@ -3,7 +3,6 @@ from chromadb.utils import embedding_functions
 
 from AI_chat.main import GROQ_API_KEY
 
-# إنشاء DB
 chroma_client = chromadb.Client()
 
 embedding_function = embedding_functions.OpenAIEmbeddingFunction(
