@@ -9,9 +9,6 @@ from fastapi.middleware.cors import CORSMiddleware
 import chromadb
 from chromadb.utils import embedding_functions
 
-# =========================
-# ⚙️ إعدادات أساسية
-# =========================
 load_dotenv()
 
 app = FastAPI()
