@@ -12,7 +12,6 @@ export function HeroSection() {
   const chatRef = useRef(null);
   const inputRef = useRef(null);
 
-  // تحميل المحادثات المحفوظة
   useEffect(() => {
     const saved = localStorage.getItem("chat_messages");
     if (saved) {
@@ -25,14 +24,12 @@ export function HeroSection() {
     }
   }, []);
 
-  // حفظ المحادثات
   useEffect(() => {
     if (messages.length > 0) {
       localStorage.setItem("chat_messages", JSON.stringify(messages));
     }
   }, [messages]);
 
-  // التمرير التلقائي
   useEffect(() => {
     if (chatRef.current && (messages.length > 0 || loading)) {
       const shouldAutoScroll = chatRef.current.scrollHeight - chatRef.current.scrollTop - chatRef.current.clientHeight < 100;
@@ -45,7 +42,6 @@ export function HeroSection() {
     }
   }, [messages, loading]);
 
-  // مراقبة حدث التمرير لإظهار زر العودة للأسفل
   useEffect(() => {
     const handleScroll = () => {
       if (chatRef.current) {
@@ -72,7 +68,6 @@ export function HeroSection() {
     const trimmedQuestion = question.trim();
     if (!trimmedQuestion) return;
 
-    // منع الإرسال المتعدد أثناء التحميل
     if (loading) return;
 
     const userMessage = trimmedQuestion;
@@ -165,23 +160,18 @@ export function HeroSection() {
   return (
     <section className="relative min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-white px-4 py-8">
       
-      {/* خلفية متحركة */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute -top-40 -right-40 w-80 h-80 bg-indigo-500/20 rounded-full blur-3xl animate-pulse"></div>
         <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-purple-500/20 rounded-full blur-3xl animate-pulse delay-1000"></div>
       </div>
 
-      {/* Container */}
       <div className="relative w-full max-w-4xl z-10 animate-fade-in">
 
-        {/* Header مع تحسينات */}
         <div className="text-center mb-8">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-500/10 border border-indigo-500/20 mb-4">
             <Sparkles className="w-4 h-4 text-indigo-400 animate-pulse" />
           </div>
-          <h1 className="text-2xl md:text-2xl font-bold bg-gradient-to-r from-white via-indigo-200 to-indigo-400 bg-clip-text text-transparent">
-            Edarty-AI
-          </h1>
+            <img src="/images/logo.png" alt="Logo" className="h-36 w-36" />
         </div>
 
         <div className="bg-white/5 border border-white/10 rounded-2xl overflow-hidden backdrop-blur-xl shadow-2xl transition-all duration-300 hover:shadow-indigo-500/10">
