@@ -12,7 +12,7 @@ app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "http://localhost:5173",
+        "https://arabic-sciences-website-1.onrender.com",
         "https://arabic-sciences-website.vercel.app"
     ],
     allow_credentials=True,
