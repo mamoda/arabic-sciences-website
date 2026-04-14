@@ -171,7 +171,7 @@ export function HeroSection() {
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-500/10 border border-indigo-500/20 mb-4">
             <Sparkles className="w-4 h-4 text-indigo-400 animate-pulse" />
           </div>
-            <img src="/images/logo.png" alt="Logo" className="h-36 w-36" />
+            <img src="/images/logo.png" alt="Logo" className="h-36 w-36 items-center" />
         </div>
 
         <div className="bg-white/5 border border-white/10 rounded-2xl overflow-hidden backdrop-blur-xl shadow-2xl transition-all duration-300 hover:shadow-indigo-500/10">
