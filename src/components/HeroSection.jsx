@@ -180,16 +180,14 @@ export function HeroSection() {
             <Sparkles className="w-4 h-4 text-indigo-400 animate-pulse" />
             <span className="text-sm text-indigo-300">مساعد الذكاء الاصطناعي</span>
           </div>
-          <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-white via-indigo-200 to-indigo-400 bg-clip-text text-transparent">
-            اسأل عن العلوم العربية
+          <h1 className="text-2xl md:text-2xl font-bold bg-gradient-to-r from-white via-indigo-200 to-indigo-400 bg-clip-text text-transparent">
+            Edarty-AI
           </h1>
           <p className="text-white/50 mt-2 text-sm">Powered by RAG + OpenAI | إجابات دقيقة ومصادر موثوقة</p>
         </div>
 
-        {/* Chat Card مع تحسينات */}
         <div className="bg-white/5 border border-white/10 rounded-2xl overflow-hidden backdrop-blur-xl shadow-2xl transition-all duration-300 hover:shadow-indigo-500/10">
           
-          {/* Header Chat مع إحصائيات */}
           <div className="border-b border-white/10 px-6 py-3 flex justify-between items-center bg-black/30">
             <div className="flex items-center gap-2">
               <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
@@ -200,7 +198,6 @@ export function HeroSection() {
             </div>
           </div>
 
-          {/* Messages Area مع تحسينات */}
           <div
             ref={chatRef}
             className="h-[500px] overflow-y-auto p-4 space-y-4 scroll-smooth"
@@ -284,7 +281,6 @@ export function HeroSection() {
             )}
           </div>
 
-          {/* زر العودة للأسفل */}
           {showScrollButton && (
             <button
               onClick={scrollToBottom}
@@ -294,7 +290,6 @@ export function HeroSection() {
             </button>
           )}
 
-          {/* رسالة الخطأ العامة */}
           {error && (
             <div className="mx-4 mb-2 px-4 py-2 rounded-lg bg-red-500/20 border border-red-500/30 text-red-200 text-sm flex items-center gap-2 animate-slide-in">
               <AlertCircle className="w-4 h-4" />
@@ -302,7 +297,6 @@ export function HeroSection() {
             </div>
           )}
 
-          {/* Input Area محسّن */}
           <div className="border-t border-white/10 p-4 bg-black/30">
             <div className="flex gap-2">
               <div className="flex-1 relative">
@@ -329,13 +323,11 @@ export function HeroSection() {
               </button>
             </div>
             
-            {/* تلميحات keyboard shortcuts */}
             <div className="mt-2 text-[10px] text-white/30 text-center">
               اضغط Enter للإرسال · Shift + Enter لسطر جديد
             </div>
           </div>
 
-          {/* Footer مع تحسينات */}
           <div className="flex justify-between items-center px-6 py-3 text-xs border-t border-white/10 bg-black/20">
             <button
               onClick={clearChat}
@@ -351,7 +343,7 @@ export function HeroSection() {
               <span className="text-white/20">|</span>
               <span className="text-white/30 flex items-center gap-1">
                 <Sparkles className="w-3 h-3" />
-                RAG + OpenAI
+               Edarty-Ai
               </span>
             </div>
           </div>
