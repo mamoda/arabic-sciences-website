@@ -1,50 +1,48 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
-import openai
+import requests
 import os
 from dotenv import load_dotenv
-from rag import query_rag, load_data
 
 load_dotenv()
 
-openai.api_key = os.getenv("OPENAI_API_KEY")
-
 app = FastAPI()
 
-# تحميل البيانات أول مرة
-load_data()
-
-class ChatRequest(BaseModel):
+class Question(BaseModel):
     question: str
 
+GROQ_API_KEY = os.getenv("GROQ_API_KEY")
+
 @app.post("/chat")
-def chat(req: ChatRequest):
-    context_docs = query_rag(req.question)
+def chat(q: Question):
+    try:
+        response = requests.post(
+            "https://api.groq.com/openai/v1/chat/completions",
+            headers={
+                "Authorization": f"Bearer {GROQ_API_KEY}",
+                "Content-Type": "application/json"
+            },
+            json={
+                "model": "llama3-8b-8192",
+                "messages": [
+                    {
+                        "role": "system",
+                        "content": "أنت مساعد متخصص في العلوم الشرعية والعربية وتجيب بإجابات واضحة ومختصرة"
+                    },
+                    {
+                        "role": "user",
+                        "content": q.question
+                    }
+                ],
+                "temperature": 0.7
+            }
+        )
 
-    context = "\n".join(context_docs)
+        data = response.json()
 
-    prompt = f"""
-أنت مساعد متخصص في العلوم الشرعية.
-أجب فقط من المعلومات التالية:
+        return {
+            "answer": data["choices"][0]["message"]["content"]
+        }
 
-{context}
-
-السؤال:
-{req.question}
-
-إذا لم تجد الإجابة، قل: لا أعلم.
-"""
-
-    response = openai.ChatCompletion.create(
-        model="gpt-4o-mini",
-        messages=[
-            {"role": "user", "content": prompt}
-        ]
-    )
-
-    answer = response["choices"][0]["message"]["content"]
-
-    return {
-        "answer": answer,
-        "sources": context_docs
-    }
+    except Exception as e:
+        return {"answer": "حدث خطأ في الاتصال"}
