@@ -178,12 +178,10 @@ export function HeroSection() {
         <div className="text-center mb-8">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-500/10 border border-indigo-500/20 mb-4">
             <Sparkles className="w-4 h-4 text-indigo-400 animate-pulse" />
-            <span className="text-sm text-indigo-300">مساعد الذكاء الاصطناعي</span>
           </div>
           <h1 className="text-2xl md:text-2xl font-bold bg-gradient-to-r from-white via-indigo-200 to-indigo-400 bg-clip-text text-transparent">
             Edarty-AI
           </h1>
-          <p className="text-white/50 mt-2 text-sm">Powered by RAG + OpenAI | إجابات دقيقة ومصادر موثوقة</p>
         </div>
 
         <div className="bg-white/5 border border-white/10 rounded-2xl overflow-hidden backdrop-blur-xl shadow-2xl transition-all duration-300 hover:shadow-indigo-500/10">
