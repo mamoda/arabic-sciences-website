@@ -337,7 +337,7 @@ export function HeroSection() {
             </button>
             
             <div className="flex items-center gap-3">
-              <span className="text-white/30">© 2024</span>
+              <span className="text-white/30">© 2026</span>
               <span className="text-white/20">|</span>
               <span className="text-white/30 flex items-center gap-1">
                 <Sparkles className="w-3 h-3" />
@@ -348,7 +348,6 @@ export function HeroSection() {
         </div>
       </div>
 
-      {/* إضافة CSS animations */}
       <style jsx>{`
         @keyframes fade-in {
           from {
