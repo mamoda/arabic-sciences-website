@@ -6,12 +6,8 @@ import re
 
 # =========================
 # 🔐 API KEY
-# =========================
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 
-# =========================
-# 🧠 Chroma Setup
-# =========================
 chroma_client = chromadb.Client()
 
 embedding_function = embedding_functions.DefaultEmbeddingFunction()
@@ -21,9 +17,6 @@ collection = chroma_client.get_or_create_collection(
     embedding_function=embedding_function
 )
 
-# =========================
-# ✂️ Chunking
-# =========================
 def split_text(text, chunk_size=400, overlap=50):
     chunks = []
     start = 0
@@ -35,9 +28,6 @@ def split_text(text, chunk_size=400, overlap=50):
 
     return chunks
 
-# =========================
-# 🧠 Topic Detection
-# =========================
 def detect_topic(text):
     text = text.lower()
 
@@ -50,9 +40,6 @@ def detect_topic(text):
 
     return "general"
 
-# =========================
-# 📥 Load Data
-# =========================
 def load_data():
     with open("data.txt", "r", encoding="utf-8") as f:
         text = f.read()
@@ -70,24 +57,15 @@ def load_data():
             }]
         )
 
-# =========================
-# 🧹 Clean Text (Arabic friendly)
-# =========================
 def clean_text(text):
     return re.sub(r'[^\w\s]', '', text.lower())
 
-# =========================
-# 🔍 Keyword Score
-# =========================
 def keyword_score(text, question):
     text = clean_text(text)
     question = clean_text(question)
 
     return sum(1 for w in question.split() if w in text)
 
-# =========================
-# 🧠 Query Expansion (🔥 مهم)
-# =========================
 def expand_query(question):
     prompt = f"""
 أعد صياغة السؤال بطرق مختلفة للبحث:
@@ -120,9 +98,6 @@ def expand_query(question):
     except:
         return [question]
 
-# =========================
-# 🔍 Hybrid Search (Multi Query)
-# =========================
 def hybrid_search(question, top_k=5, topic=None):
     queries = expand_query(question)
 
@@ -151,7 +126,6 @@ def hybrid_search(question, top_k=5, topic=None):
                 "score": score
             })
 
-    # إزالة التكرار
     unique = {}
     for r in all_results:
         unique[r["text"]] = r
@@ -161,9 +135,6 @@ def hybrid_search(question, top_k=5, topic=None):
 
     return final[:top_k]
 
-# =========================
-# 🤖 Agent Router
-# =========================
 def agent_router(question):
     q = question.lower()
 
@@ -178,9 +149,6 @@ def agent_router(question):
 
     return "hybrid"
 
-# =========================
-# 🌐 Hadith API
-# =========================
 def search_hadith(query):
     try:
         url = f"https://dorar.net/dorar_api.json?skey={query}"
@@ -191,9 +159,6 @@ def search_hadith(query):
     except:
         return []
 
-# =========================
-# 🤖 Call AI
-# =========================
 def call_ai(prompt):
     try:
         response = requests.post(
@@ -215,9 +180,6 @@ def call_ai(prompt):
     except:
         return "❌ خطأ في الاتصال بالـ AI"
 
-# =========================
-# 🧠 Smart Answer (🔥 القلب)
-# =========================
 def smart_answer(question):
     route = agent_router(question)
 
@@ -231,10 +193,8 @@ def smart_answer(question):
             "citations": ["dorar.net"]
         }
 
-    # 🔍 Search
     docs = hybrid_search(question)
 
-    # 🔥 Fallback AI
     if not docs:
         return {
             "answer": call_ai(f"أجب عن هذا السؤال:\n{question}"),
@@ -244,7 +204,6 @@ def smart_answer(question):
 
     context = "\n".join([d["text"] for d in docs[:3]])
 
-    # 🧠 RAG
     if route == "rag":
         prompt = f"""
 أنت مساعد متخصص في العلوم الشرعية.
@@ -258,7 +217,6 @@ def smart_answer(question):
 اذكر المصدر: data.txt
 """
 
-    # 🤖 AI مباشر
     elif route == "ai":
         return {
             "answer": call_ai(question),
@@ -266,7 +224,6 @@ def smart_answer(question):
             "citations": ["groq"]
         }
 
-    # 🔀 Hybrid
     else:
         prompt = f"""
 أجب باستخدام السياق + معرفتك.
@@ -288,8 +245,5 @@ def smart_answer(question):
         "citations": [d["meta"] for d in docs[:3]]
     }
 
-# =========================
-# 🧪 Debug
-# =========================
 def debug(question):
     return hybrid_search(question)
