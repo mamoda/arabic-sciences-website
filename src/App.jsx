@@ -9,11 +9,6 @@ import { Footer } from './components/Footer'
 import { ScientistDetail } from './components/ScientistDetail';
 
 
-// import { Register } from "./components/Register";
-// import { Login } from "./components/Login";
-// import { Profile } from "./components/Profile";
-// import { BooksPage } from '/components/BooksPage';
-
 function App() {
   return (
     <div className="min-h-screen bg-background text-foreground">
