@@ -10,13 +10,9 @@ import re
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 
 # =========================
-# 🧠 Chroma Persistent DB
+# 🧠 Chroma Setup
 # =========================
-chroma_client = chromadb.Client(
-    settings=chromadb.Settings(
-        persist_directory="./chroma_db"
-    )
-)
+chroma_client = chromadb.Client()
 
 embedding_function = embedding_functions.DefaultEmbeddingFunction()
 
@@ -26,9 +22,9 @@ collection = chroma_client.get_or_create_collection(
 )
 
 # =========================
-# ✂️ Chunking
+# ✂️ Chunking (محسن)
 # =========================
-def split_text(text, chunk_size=400, overlap=50):
+def split_text(text, chunk_size=500, overlap=100):
     chunks = []
     start = 0
 
@@ -40,27 +36,12 @@ def split_text(text, chunk_size=400, overlap=50):
     return chunks
 
 # =========================
-# 🧠 Topic Detection
-# =========================
-def detect_topic(text):
-    text = text.lower()
-
-    if "فقه" in text or "طهارة" in text:
-        return "fiqh"
-    if "حديث" in text:
-        return "hadith"
-    if "لغة" in text or "نحو" in text:
-        return "language"
-
-    return "general"
-
-# =========================
-# 📥 Load Data (🔥 ثابتة)
+# 📥 Load Data
 # =========================
 def load_data():
     try:
         if collection.count() > 0:
-            print("✅ Data already exists")
+            print("✅ Data already loaded")
             return
 
         with open("data.txt", "r", encoding="utf-8") as f:
@@ -71,126 +52,66 @@ def load_data():
         for i, chunk in enumerate(chunks):
             collection.add(
                 documents=[chunk],
-                ids=[f"chunk_{i}"],
-                metadatas=[{
-                    "chunk_id": i,
-                    "topic": detect_topic(chunk),
-                    "source": "data.txt"
-                }]
+                ids=[f"chunk_{i}"]
             )
 
-        chroma_client.persist()
-
-        print("✅ Data loaded & persisted")
+        print(f"✅ Loaded {len(chunks)} chunks")
 
     except Exception as e:
-        print(f"❌ Error loading data: {e}")
+        print(f"❌ Load error: {e}")
 
 # =========================
-# 🧹 Clean Text
+# 🧹 تنظيف النص
 # =========================
 def clean_text(text):
     return re.sub(r'[^\w\s]', '', text.lower())
 
 # =========================
-# 🔍 Keyword Score
+# 🔍 Keyword Score (أقوى)
 # =========================
 def keyword_score(text, question):
     text = clean_text(text)
     question = clean_text(question)
 
-    return sum(1 for w in question.split() if w in text)
+    words = question.split()
+    return sum(2 if w in text else 0 for w in words)
 
 # =========================
-# 🧠 Query Expansion
+# 🔍 Hybrid Search (محسن)
 # =========================
-def expand_query(question):
+def hybrid_search(question, top_k=5):
     try:
-        res = requests.post(
-            "https://api.groq.com/openai/v1/chat/completions",
-            headers={
-                "Authorization": f"Bearer {GROQ_API_KEY}",
-                "Content-Type": "application/json"
-            },
-            json={
-                "model": "llama-3.1-8b-instant",
-                "messages": [{
-                    "role": "user",
-                    "content": f"اكتب 3 صيغ مختلفة لهذا السؤال:\n{question}"
-                }],
-                "temperature": 0.3
-            },
-            timeout=10
-        )
-
-        text = res.json()["choices"][0]["message"]["content"]
-        variants = [line.strip() for line in text.split("\n") if line.strip()]
-
-        return [question] + variants
-
-    except:
-        return [question]
-
-# =========================
-# 🔍 Hybrid Search
-# =========================
-def hybrid_search(question, top_k=5, topic=None):
-    queries = expand_query(question)
-
-    all_results = []
-
-    for q in queries:
         results = collection.query(
-            query_texts=[q],
-            n_results=top_k,
-            where={"topic": topic} if topic else None
+            query_texts=[question],
+            n_results=top_k * 2
         )
 
         docs = results.get("documents", [[]])[0]
-        metas = results.get("metadatas", [[]])[0]
         distances = results.get("distances", [[]])[0]
 
-        for doc, meta, dist in zip(docs, metas, distances):
+        scored = []
+
+        for doc, dist in zip(docs, distances):
             semantic = 1 / (1 + (dist or 1))
             keyword = keyword_score(doc, question)
 
-            score = (semantic * 0.7) + (keyword * 0.3)
+            score = (semantic * 0.6) + (keyword * 0.4)
 
-            all_results.append({
+            scored.append({
                 "text": doc,
-                "meta": meta,
                 "score": score
             })
 
-    # remove duplicates
-    unique = {}
-    for r in all_results:
-        unique[r["text"]] = r
+        scored.sort(key=lambda x: x["score"], reverse=True)
 
-    final = list(unique.values())
-    final.sort(key=lambda x: x["score"], reverse=True)
+        return scored[:top_k]
 
-    return final[:top_k]
+    except Exception as e:
+        print(f"❌ Search error: {e}")
+        return []
 
 # =========================
-# 🤖 Agent Router
-# =========================
-def agent_router(question):
-    q = question.lower()
-
-    if "حديث" in q:
-        return "hadith_api"
-
-    if any(x in q for x in ["شرح", "ما هو", "اذكر", "تعريف", "فقه"]):
-        return "rag"
-
-    if any(x in q for x in ["لماذا", "كيف", "رأي"]):
-        return "ai"
-
-    return "hybrid"
-
-# =========================
-# 🌐 Hadith API
+# 🌐 Hadith API (dorar)
 # =========================
 def search_hadith(query):
     try:
@@ -199,11 +120,13 @@ def search_hadith(query):
         data = res.json()
 
         return [h["th"] for h in data.get("ahadith", [])[:3]]
-    except:
+
+    except Exception as e:
+        print(f"❌ Hadith API error: {e}")
         return []
 
 # =========================
-# 🤖 Call AI
+# 🤖 AI (Groq)
 # =========================
 def call_ai(prompt):
     try:
@@ -223,62 +146,43 @@ def call_ai(prompt):
 
         return response.json()["choices"][0]["message"]["content"]
 
-    except:
-        return "❌ خطأ في الاتصال بالـ AI"
+    except Exception as e:
+        print(f"❌ AI error: {e}")
+        return "❌ حدث خطأ في الاتصال بالذكاء الاصطناعي"
 
 # =========================
-# 🧠 Smart Answer
+# 🧠 Smart Answer (🔥 قوي جدًا)
 # =========================
 def smart_answer(question):
-    route = agent_router(question)
 
-    # 🟢 Hadith API
-    if route == "hadith_api":
+    # 🟢 لو السؤال عن حديث → API مباشر
+    if "حديث" in question:
         hadiths = search_hadith(question)
 
-        return {
-            "answer": "\n\n".join(hadiths) if hadiths else call_ai(question),
-            "mode": "HADITH_API",
-            "citations": ["dorar.net"]
-        }
+        if hadiths:
+            return {
+                "answer": "\n\n".join(hadiths),
+                "mode": "HADITH_API",
+                "citations": ["dorar.net"]
+            }
 
+    # 🔍 بحث في الداتا
     docs = hybrid_search(question)
 
-    # 🔥 fallback
+    # 🔥 fallback لو مفيش نتائج
     if not docs:
         return {
             "answer": call_ai(question),
-            "mode": "FALLBACK_AI",
+            "mode": "AI_FALLBACK",
             "citations": ["AI"]
         }
 
-    context = "\n".join([d["text"] for d in docs[:3]])
+    # 🧠 بناء السياق
+    context = "\n".join([d["text"] for d in docs])
 
-    if route == "rag":
-        prompt = f"""
-أنت مساعد متخصص في العلوم الشرعية.
+    prompt = f"""
+أجب باستخدام المعلومات التالية:
 
-اعتمد فقط على هذا السياق:
-{context}
-
-السؤال:
-{question}
-
-اذكر المصدر.
-"""
-
-    elif route == "ai":
-        return {
-            "answer": call_ai(question),
-            "mode": "AI",
-            "citations": ["groq"]
-        }
-
-    else:
-        prompt = f"""
-أجب باستخدام السياق + معرفتك.
-
-السياق:
 {context}
 
 السؤال:
@@ -289,8 +193,8 @@ def smart_answer(question):
 
     return {
         "answer": answer,
-        "mode": route.upper(),
-        "citations": [d["meta"] for d in docs[:3]]
+        "mode": "HYBRID",
+        "citations": ["data.txt"]
     }
 
 # =========================
