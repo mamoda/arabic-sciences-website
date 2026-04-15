@@ -5,7 +5,7 @@ import os
 from dotenv import load_dotenv
 
 # 🔥 استدعاء الذكاء بتاعك
-from ai_engine import smart_answer, load_data
+from rag import smart_answer, load_data
 
 load_dotenv()
 
