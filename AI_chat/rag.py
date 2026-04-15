@@ -6,9 +6,17 @@ import re
 
 # =========================
 # 🔐 API KEY
+# =========================
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 
-chroma_client = chromadb.Client()
+# =========================
+# 🧠 Chroma Persistent DB
+# =========================
+chroma_client = chromadb.Client(
+    settings=chromadb.Settings(
+        persist_directory="./chroma_db"
+    )
+)
 
 embedding_function = embedding_functions.DefaultEmbeddingFunction()
 
@@ -17,6 +25,9 @@ collection = chroma_client.get_or_create_collection(
     embedding_function=embedding_function
 )
 
+# =========================
+# ✂️ Chunking
+# =========================
 def split_text(text, chunk_size=400, overlap=50):
     chunks = []
     start = 0
@@ -28,6 +39,9 @@ def split_text(text, chunk_size=400, overlap=50):
 
     return chunks
 
+# =========================
+# 🧠 Topic Detection
+# =========================
 def detect_topic(text):
     text = text.lower()
 
@@ -40,41 +54,57 @@ def detect_topic(text):
 
     return "general"
 
+# =========================
+# 📥 Load Data (🔥 ثابتة)
+# =========================
 def load_data():
-    with open("data.txt", "r", encoding="utf-8") as f:
-        text = f.read()
+    try:
+        if collection.count() > 0:
+            print("✅ Data already exists")
+            return
 
-    chunks = split_text(text)
+        with open("data.txt", "r", encoding="utf-8") as f:
+            text = f.read()
 
-    for i, chunk in enumerate(chunks):
-        collection.add(
-            documents=[chunk],
-            ids=[f"chunk_{i}"],
-            metadatas=[{
-                "chunk_id": i,
-                "topic": detect_topic(chunk),
-                "source": "data.txt"
-            }]
-        )
+        chunks = split_text(text)
 
+        for i, chunk in enumerate(chunks):
+            collection.add(
+                documents=[chunk],
+                ids=[f"chunk_{i}"],
+                metadatas=[{
+                    "chunk_id": i,
+                    "topic": detect_topic(chunk),
+                    "source": "data.txt"
+                }]
+            )
+
+        chroma_client.persist()
+
+        print("✅ Data loaded & persisted")
+
+    except Exception as e:
+        print(f"❌ Error loading data: {e}")
+
+# =========================
+# 🧹 Clean Text
+# =========================
 def clean_text(text):
     return re.sub(r'[^\w\s]', '', text.lower())
 
+# =========================
+# 🔍 Keyword Score
+# =========================
 def keyword_score(text, question):
     text = clean_text(text)
     question = clean_text(question)
 
     return sum(1 for w in question.split() if w in text)
 
+# =========================
+# 🧠 Query Expansion
+# =========================
 def expand_query(question):
-    prompt = f"""
-أعد صياغة السؤال بطرق مختلفة للبحث:
-
-السؤال: {question}
-
-اكتب 3 صيغ فقط.
-"""
-
     try:
         res = requests.post(
             "https://api.groq.com/openai/v1/chat/completions",
@@ -84,7 +114,10 @@ def expand_query(question):
             },
             json={
                 "model": "llama-3.1-8b-instant",
-                "messages": [{"role": "user", "content": prompt}],
+                "messages": [{
+                    "role": "user",
+                    "content": f"اكتب 3 صيغ مختلفة لهذا السؤال:\n{question}"
+                }],
                 "temperature": 0.3
             },
             timeout=10
@@ -98,6 +131,9 @@ def expand_query(question):
     except:
         return [question]
 
+# =========================
+# 🔍 Hybrid Search
+# =========================
 def hybrid_search(question, top_k=5, topic=None):
     queries = expand_query(question)
 
@@ -110,12 +146,12 @@ def hybrid_search(question, top_k=5, topic=None):
             where={"topic": topic} if topic else None
         )
 
-        docs = results["documents"][0]
-        metas = results["metadatas"][0]
-        distances = results["distances"][0]
+        docs = results.get("documents", [[]])[0]
+        metas = results.get("metadatas", [[]])[0]
+        distances = results.get("distances", [[]])[0]
 
         for doc, meta, dist in zip(docs, metas, distances):
-            semantic = 1 / (1 + dist)
+            semantic = 1 / (1 + (dist or 1))
             keyword = keyword_score(doc, question)
 
             score = (semantic * 0.7) + (keyword * 0.3)
@@ -126,6 +162,7 @@ def hybrid_search(question, top_k=5, topic=None):
                 "score": score
             })
 
+    # remove duplicates
     unique = {}
     for r in all_results:
         unique[r["text"]] = r
@@ -135,20 +172,26 @@ def hybrid_search(question, top_k=5, topic=None):
 
     return final[:top_k]
 
+# =========================
+# 🤖 Agent Router
+# =========================
 def agent_router(question):
     q = question.lower()
 
     if "حديث" in q:
         return "hadith_api"
 
-    if any(x in q for x in ["شرح", "ما هو", "اذكر", "تعريف", "فقه" ,"ما" ,"من هو", "من", "متى"]):
+    if any(x in q for x in ["شرح", "ما هو", "اذكر", "تعريف", "فقه"]):
         return "rag"
 
-    if any(x in q for x in ["لماذا", "كيف", "رأي", "فكر"]):
+    if any(x in q for x in ["لماذا", "كيف", "رأي"]):
         return "ai"
 
     return "hybrid"
 
+# =========================
+# 🌐 Hadith API
+# =========================
 def search_hadith(query):
     try:
         url = f"https://dorar.net/dorar_api.json?skey={query}"
@@ -159,6 +202,9 @@ def search_hadith(query):
     except:
         return []
 
+# =========================
+# 🤖 Call AI
+# =========================
 def call_ai(prompt):
     try:
         response = requests.post(
@@ -180,6 +226,9 @@ def call_ai(prompt):
     except:
         return "❌ خطأ في الاتصال بالـ AI"
 
+# =========================
+# 🧠 Smart Answer
+# =========================
 def smart_answer(question):
     route = agent_router(question)
 
@@ -188,18 +237,19 @@ def smart_answer(question):
         hadiths = search_hadith(question)
 
         return {
-            "answer": "\n\n".join(hadiths) if hadiths else "لا يوجد نتائج",
+            "answer": "\n\n".join(hadiths) if hadiths else call_ai(question),
             "mode": "HADITH_API",
             "citations": ["dorar.net"]
         }
 
     docs = hybrid_search(question)
 
+    # 🔥 fallback
     if not docs:
         return {
-            "answer": call_ai(f"أجب عن هذا السؤال:\n{question}"),
+            "answer": call_ai(question),
             "mode": "FALLBACK_AI",
-            "citations": ["AI fallback"]
+            "citations": ["AI"]
         }
 
     context = "\n".join([d["text"] for d in docs[:3]])
@@ -214,7 +264,7 @@ def smart_answer(question):
 السؤال:
 {question}
 
-اذكر المصدر: data.txt
+اذكر المصدر.
 """
 
     elif route == "ai":
@@ -233,8 +283,6 @@ def smart_answer(question):
 
 السؤال:
 {question}
-
-اذكر المصدر في النهاية.
 """
 
     answer = call_ai(prompt)
@@ -245,5 +293,8 @@ def smart_answer(question):
         "citations": [d["meta"] for d in docs[:3]]
     }
 
+# =========================
+# 🧪 Debug
+# =========================
 def debug(question):
     return hybrid_search(question)
