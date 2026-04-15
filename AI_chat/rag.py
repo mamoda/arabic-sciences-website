@@ -2,6 +2,7 @@ import chromadb
 from chromadb.utils import embedding_functions
 import os
 import requests
+import re
 
 # =========================
 # 🔐 API KEY
@@ -70,40 +71,95 @@ def load_data():
         )
 
 # =========================
-# 🔍 Hybrid Search
+# 🧹 Clean Text (Arabic friendly)
+# =========================
+def clean_text(text):
+    return re.sub(r'[^\w\s]', '', text.lower())
+
+# =========================
+# 🔍 Keyword Score
 # =========================
 def keyword_score(text, question):
-    text = text.lower()
-    question = question.lower()
+    text = clean_text(text)
+    question = clean_text(question)
+
     return sum(1 for w in question.split() if w in text)
 
+# =========================
+# 🧠 Query Expansion (🔥 مهم)
+# =========================
+def expand_query(question):
+    prompt = f"""
+أعد صياغة السؤال بطرق مختلفة للبحث:
+
+السؤال: {question}
+
+اكتب 3 صيغ فقط.
+"""
+
+    try:
+        res = requests.post(
+            "https://api.groq.com/openai/v1/chat/completions",
+            headers={
+                "Authorization": f"Bearer {GROQ_API_KEY}",
+                "Content-Type": "application/json"
+            },
+            json={
+                "model": "llama-3.1-8b-instant",
+                "messages": [{"role": "user", "content": prompt}],
+                "temperature": 0.3
+            },
+            timeout=10
+        )
+
+        text = res.json()["choices"][0]["message"]["content"]
+        variants = [line.strip() for line in text.split("\n") if line.strip()]
+
+        return [question] + variants
+
+    except:
+        return [question]
+
+# =========================
+# 🔍 Hybrid Search (Multi Query)
+# =========================
 def hybrid_search(question, top_k=5, topic=None):
-    results = collection.query(
-        query_texts=[question],
-        n_results=top_k,
-        where={"topic": topic} if topic else None
-    )
+    queries = expand_query(question)
 
-    docs = results["documents"][0]
-    metas = results["metadatas"][0]
-    distances = results["distances"][0]
+    all_results = []
 
-    scored = []
+    for q in queries:
+        results = collection.query(
+            query_texts=[q],
+            n_results=top_k,
+            where={"topic": topic} if topic else None
+        )
 
-    for doc, meta, dist in zip(docs, metas, distances):
-        semantic = 1 / (1 + dist)
-        keyword = keyword_score(doc, question)
+        docs = results["documents"][0]
+        metas = results["metadatas"][0]
+        distances = results["distances"][0]
 
-        score = (semantic * 0.7) + (keyword * 0.3)
+        for doc, meta, dist in zip(docs, metas, distances):
+            semantic = 1 / (1 + dist)
+            keyword = keyword_score(doc, question)
 
-        scored.append({
-            "text": doc,
-            "meta": meta,
-            "score": score
-        })
+            score = (semantic * 0.7) + (keyword * 0.3)
 
-    scored.sort(key=lambda x: x["score"], reverse=True)
-    return scored
+            all_results.append({
+                "text": doc,
+                "meta": meta,
+                "score": score
+            })
+
+    # إزالة التكرار
+    unique = {}
+    for r in all_results:
+        unique[r["text"]] = r
+
+    final = list(unique.values())
+    final.sort(key=lambda x: x["score"], reverse=True)
+
+    return final[:top_k]
 
 # =========================
 # 🤖 Agent Router
@@ -123,7 +179,7 @@ def agent_router(question):
     return "hybrid"
 
 # =========================
-# 🌐 Hadith API (dorar)
+# 🌐 Hadith API
 # =========================
 def search_hadith(query):
     try:
@@ -136,7 +192,7 @@ def search_hadith(query):
         return []
 
 # =========================
-# 🧠 Call AI
+# 🤖 Call AI
 # =========================
 def call_ai(prompt):
     try:
@@ -157,17 +213,15 @@ def call_ai(prompt):
         return response.json()["choices"][0]["message"]["content"]
 
     except:
-        return "❌ حصل خطأ في الاتصال بالـ AI"
+        return "❌ خطأ في الاتصال بالـ AI"
 
 # =========================
-# 🧠 Smart Answer
+# 🧠 Smart Answer (🔥 القلب)
 # =========================
 def smart_answer(question):
     route = agent_router(question)
 
-    # =========================
-    # 📚 Hadith API
-    # =========================
+    # 🟢 Hadith API
     if route == "hadith_api":
         hadiths = search_hadith(question)
 
@@ -177,23 +231,20 @@ def smart_answer(question):
             "citations": ["dorar.net"]
         }
 
-    # =========================
-    # 📚 RAG / Hybrid
-    # =========================
+    # 🔍 Search
     docs = hybrid_search(question)
 
+    # 🔥 Fallback AI
     if not docs:
         return {
-            "answer": "لا يوجد معلومات كافية في قاعدة البيانات",
-            "mode": "EMPTY",
-            "citations": []
+            "answer": call_ai(f"أجب عن هذا السؤال:\n{question}"),
+            "mode": "FALLBACK_AI",
+            "citations": ["AI fallback"]
         }
 
     context = "\n".join([d["text"] for d in docs[:3]])
 
-    # =========================
     # 🧠 RAG
-    # =========================
     if route == "rag":
         prompt = f"""
 أنت مساعد متخصص في العلوم الشرعية.
@@ -207,9 +258,7 @@ def smart_answer(question):
 اذكر المصدر: data.txt
 """
 
-    # =========================
-    # 🤖 AI
-    # =========================
+    # 🤖 AI مباشر
     elif route == "ai":
         return {
             "answer": call_ai(question),
@@ -217,9 +266,7 @@ def smart_answer(question):
             "citations": ["groq"]
         }
 
-    # =========================
     # 🔀 Hybrid
-    # =========================
     else:
         prompt = f"""
 أجب باستخدام السياق + معرفتك.
