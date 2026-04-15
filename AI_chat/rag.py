@@ -170,7 +170,7 @@ def agent_router(question):
     if "حديث" in q:
         return "hadith_api"
 
-    if any(x in q for x in ["شرح", "ما هو", "اذكر", "تعريف", "فقه"]):
+    if any(x in q for x in ["شرح", "ما هو", "اذكر", "تعريف", "فقه" ,"ما" ,"من هو", "من", "متى"]):
         return "rag"
 
     if any(x in q for x in ["لماذا", "كيف", "رأي", "فكر"]):
