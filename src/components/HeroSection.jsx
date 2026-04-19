@@ -134,7 +134,7 @@ export function HeroSection() {
     if (autoRefresh) {
       refreshInterval.current = setInterval(() => {
         fetchAllNews();
-      }, 300000); // تحديث كل 30 ثانية
+      }, 300000); 
     }
     
     return () => {
@@ -327,10 +327,6 @@ export function HeroSection() {
             <span className="text-xs text-indigo-300">مصادر علمية موثوقة</span>
           </div>
           <img src="/images/logo.svg" alt="Logo" className="h-28 w-28 mx-auto mb-4 hover:scale-105 transition-transform duration-300" />
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-white via-indigo-200 to-white bg-clip-text text-transparent">
-            منصة العلوم العربية
-          </h1>
-          <p className="text-white/50 mt-2">أحدث الأخبار العلمية مع محادثة ذكية</p>
         </div>
 
         <div className="grid lg:grid-cols-2 gap-6">
