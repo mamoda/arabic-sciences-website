@@ -477,13 +477,13 @@ function TimeAndPrayerBar() {
         )}
       </div>
 
-      {/* شريط RSS أسفل الوقت
+      شريط RSS أسفل الوقت
       <div className="mt-3 flex items-center justify-center gap-2">
         <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/20 backdrop-blur-sm">
           <Rss className="w-3 h-3 text-indigo-400 animate-pulse" />
           <span className="text-[11px] text-indigo-300">مصادر علمية موثوقة • تحديث مباشر</span>
         </div>
-      </div> */}
+      </div>
     </div>
   );
 }
