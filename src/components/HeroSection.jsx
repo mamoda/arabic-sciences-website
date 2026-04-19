@@ -2,15 +2,16 @@ import { useState, useEffect, useRef } from "react";
 import { 
   Send, Trash2, Sparkles, Copy, Check, AlertCircle, ArrowDown,
   Rss, TrendingUp, Newspaper, BookOpen, Atom, Cpu, RefreshCw,
-  ExternalLink, Calendar, Clock, Zap
+  ExternalLink, Calendar, Clock, Zap, WifiOff
 } from "lucide-react";
 
-// قائمة مصادر RSS العلمية المجانية
+// قائمة مصادر RSS العلمية المجانية (مع روابط بديلة)
 const RSS_FEEDS = [
   {
     id: 1,
     name: "Nature News",
     url: "https://www.nature.com/nature/articles.rss",
+    backupUrl: "https://feeds.nature.com/nature/rss/current",
     category: "العلوم الطبيعية",
     icon: <Atom className="w-4 h-4" />,
     color: "from-emerald-500 to-teal-600"
@@ -19,6 +20,7 @@ const RSS_FEEDS = [
     id: 2,
     name: "Science Daily",
     url: "https://www.sciencedaily.com/rss/all.xml",
+    backupUrl: "https://www.sciencedaily.com/rss/top.xml",
     category: "العلوم المتعددة",
     icon: <BookOpen className="w-4 h-4" />,
     color: "from-blue-500 to-cyan-600"
@@ -27,54 +29,140 @@ const RSS_FEEDS = [
     id: 3,
     name: "MIT Technology Review",
     url: "https://www.technologyreview.com/feed/",
+    backupUrl: "https://www.technologyreview.com/feed/top/",
     category: "التقنية",
     icon: <Cpu className="w-4 h-4" />,
     color: "from-purple-500 to-pink-600"
   },
   {
     id: 4,
-    name: "NASA Breaking News",
-    url: "https://www.nasa.gov/rss/dyn/breaking_news.rss",
+    name: "Space.com",
+    url: "https://www.space.com/feeds/all",
+    backupUrl: "https://www.space.com/feeds/news",
     category: "الفضاء",
     icon: <TrendingUp className="w-4 h-4" />,
     color: "from-orange-500 to-red-600"
   },
   {
     id: 5,
-    name: "PubMed Health",
-    url: "https://pubmed.ncbi.nlm.nih.gov/rss/search/1Tb7Xk6Kv8j5Mp9L2Y.xml",
-    category: "الصحة",
+    name: "Science News",
+    url: "https://www.sciencenews.org/feed",
+    backupUrl: "https://www.sciencenews.org/feed/news",
+    category: "العلوم العامة",
     icon: <Zap className="w-4 h-4" />,
     color: "from-green-500 to-emerald-600"
   }
 ];
 
-// خدمة جلب وتحليل RSS
-const fetchRSSFeed = async (url) => {
-  try {
-    const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`;
-    const response = await fetch(proxyUrl);
-    const data = await response.json();
-    
-    if (!data.contents) throw new Error("No content received");
-    
-    const parser = new DOMParser();
-    const xmlDoc = parser.parseFromString(data.contents, "text/xml");
-    
-    const items = xmlDoc.querySelectorAll("item");
-    const articles = Array.from(items).slice(0, 10).map(item => ({
-      title: item.querySelector("title")?.textContent || "بدون عنوان",
-      link: item.querySelector("link")?.textContent || "#",
-      description: item.querySelector("description")?.textContent?.replace(/<[^>]*>/g, '') || "لا يوجد وصف",
-      pubDate: item.querySelector("pubDate")?.textContent || new Date().toISOString(),
-      author: item.querySelector("author")?.textContent || "المصدر العلمي"
-    }));
-    
-    return articles;
-  } catch (error) {
-    console.error("Error fetching RSS:", error);
-    return [];
+// خدمة جلب RSS باستخدام طرق متعددة
+const fetchRSSWithRetry = async (url, retries = 2) => {
+  for (let i = 0; i <= retries; i++) {
+    try {
+      // استخدام خدمة RSS2JSON كبديل رئيسي
+      const rss2jsonUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(url)}`;
+      const response = await fetch(rss2jsonUrl, {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+        },
+        signal: AbortSignal.timeout(10000) // 10 seconds timeout
+      });
+      
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      
+      const data = await response.json();
+      
+      if (data.status === 'ok' && data.items && data.items.length > 0) {
+        // تحويل البيانات من RSS2JSON إلى التنسيق المطلوب
+        const articles = data.items.map(item => ({
+          title: item.title || "بدون عنوان",
+          link: item.link || "#",
+          description: item.description?.replace(/<[^>]*>/g, '') || item.content?.replace(/<[^>]*>/g, '') || "لا يوجد وصف",
+          pubDate: item.pubDate || new Date().toISOString(),
+          author: item.author || data.feed?.title || "المصدر العلمي",
+          thumbnail: item.thumbnail || item.enclosure?.link || null
+        }));
+        
+        if (articles.length > 0) return articles;
+      }
+      
+      throw new Error("No articles found");
+      
+    } catch (error) {
+      console.warn(`Attempt ${i + 1} failed for ${url}:`, error.message);
+      
+      if (i === retries) {
+        // المحاولة الأخيرة فشلت
+        return [];
+      }
+      
+      // انتظار قبل إعادة المحاولة
+      await new Promise(resolve => setTimeout(resolve, 1000 * (i + 1)));
+    }
   }
+  
+  return [];
+};
+
+// بيانات تجريبية للاستخدام عند فشل جميع المحاولات
+const getMockArticles = () => {
+  return [
+    {
+      title: "اكتشاف جديد في علاج السرطان باستخدام الخلايا المناعية",
+      link: "#",
+      description: "توصل فريق من الباحثين إلى طريقة مبتكرة لتعزيز قدرة الخلايا المناعية على مكافحة الأورام السرطانية، مما يفتح آفاقاً جديدة للعلاج المناعي.",
+      pubDate: new Date().toISOString(),
+      author: "Nature Medicine",
+      source: "العلوم الطبية",
+      sourceIcon: <Zap className="w-4 h-4" />,
+      sourceColor: "from-green-500 to-emerald-600",
+      category: "الصحة"
+    },
+    {
+      title: "تلسكوب جيمس ويب يكتشف أبعد مجرة تم رصدها على الإطلاق",
+      link: "#",
+      description: "تمكن تلسكوب جيمس ويب الفضائي من رصد مجرة على بعد 13.5 مليار سنة ضوئية، مما يساعد في فهم المراحل الأولى لتشكل الكون.",
+      pubDate: new Date(Date.now() - 3600000).toISOString(),
+      author: "NASA",
+      source: "الفضاء",
+      sourceIcon: <TrendingUp className="w-4 h-4" />,
+      sourceColor: "from-orange-500 to-red-600",
+      category: "الفضاء"
+    },
+    {
+      title: "تطور جديد في الذكاء الاصطناعي التوليدي",
+      link: "#",
+      description: "شركات التكنولوجيا تطلق نماذج جديدة قادرة على فهم السياق بشكل أعمق وإنتاج محتوى أكثر دقة وإبداعاً.",
+      pubDate: new Date(Date.now() - 7200000).toISOString(),
+      author: "MIT Technology Review",
+      source: "التقنية",
+      sourceIcon: <Cpu className="w-4 h-4" />,
+      sourceColor: "from-purple-500 to-pink-600",
+      category: "التقنية"
+    },
+    {
+      title: "تغير المناخ: 2025 هو العام الأكثر حرارة في التاريخ",
+      link: "#",
+      description: "تشير البيانات إلى أن متوسط درجات الحرارة العالمية تجاوز الرقم القياسي السابق، مما يدق ناقوس الخطر بشأن ظاهرة الاحتباس الحراري.",
+      pubDate: new Date(Date.now() - 10800000).toISOString(),
+      author: "Science Daily",
+      source: "العلوم البيئية",
+      sourceIcon: <BookOpen className="w-4 h-4" />,
+      sourceColor: "from-blue-500 to-cyan-600",
+      category: "البيئة"
+    },
+    {
+      title: "اكتشاف مضاد حيوي جديد من تربة غير مأهولة",
+      link: "#",
+      description: "باحثون يكتشفون مركباً طبيعياً في تربة من منطقة نائية يظهر فعالية ضد البكتيريا المقاومة للمضادات الحيوية.",
+      pubDate: new Date(Date.now() - 14400000).toISOString(),
+      author: "Nature",
+      source: "العلوم الطبيعية",
+      sourceIcon: <Atom className="w-4 h-4" />,
+      sourceColor: "from-emerald-500 to-teal-600",
+      category: "العلوم الطبيعية"
+    }
+  ];
 };
 
 export function HeroSection() {
@@ -86,42 +174,70 @@ export function HeroSection() {
   const [error, setError] = useState(null);
   const [news, setNews] = useState([]);
   const [loadingNews, setLoadingNews] = useState(true);
-  const [selectedFeed, setSelectedFeed] = useState(0);
   const [lastUpdate, setLastUpdate] = useState(null);
   const [autoRefresh, setAutoRefresh] = useState(true);
   const [expandedNews, setExpandedNews] = useState(null);
+  const [connectionError, setConnectionError] = useState(false);
 
   const chatRef = useRef(null);
   const inputRef = useRef(null);
-  const newsRef = useRef(null);
   const refreshInterval = useRef(null);
 
   // جلب الأخبار من RSS
   const fetchAllNews = async () => {
     setLoadingNews(true);
+    setConnectionError(false);
+    
     try {
       const allArticles = [];
-      for (const feed of RSS_FEEDS) {
-        const articles = await fetchRSSFeed(feed.url);
-        articles.forEach(article => ({
-          ...article,
-          source: feed.name,
-          sourceIcon: feed.icon,
-          sourceColor: feed.color,
-          category: feed.category
-        }));
-        allArticles.push(...articles.map(a => ({ ...a, source: feed.name, sourceIcon: feed.icon, sourceColor: feed.color, category: feed.category })));
+      
+      // محاولة جلب البيانات من جميع المصادر
+      const fetchPromises = RSS_FEEDS.map(async (feed) => {
+        try {
+          const articles = await fetchRSSWithRetry(feed.url);
+          
+          if (articles.length > 0) {
+            return articles.map(article => ({
+              ...article,
+              source: feed.name,
+              sourceIcon: feed.icon,
+              sourceColor: feed.color,
+              category: feed.category
+            }));
+          }
+          return [];
+        } catch (error) {
+          console.warn(`Failed to fetch ${feed.name}:`, error);
+          return [];
+        }
+      });
+      
+      const results = await Promise.allSettled(fetchPromises);
+      
+      results.forEach(result => {
+        if (result.status === 'fulfilled' && result.value.length > 0) {
+          allArticles.push(...result.value);
+        }
+      });
+      
+      // إذا لم يتم جلب أي بيانات، استخدم البيانات التجريبية
+      let finalNews = allArticles;
+      if (finalNews.length === 0) {
+        setConnectionError(true);
+        finalNews = getMockArticles();
+      } else {
+        // ترتيب حسب التاريخ
+        finalNews.sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate));
       }
       
-      // ترتيب حسب التاريخ
-      const sorted = allArticles.sort((a, b) => 
-        new Date(b.pubDate) - new Date(a.pubDate)
-      );
-      
-      setNews(sorted.slice(0, 30));
+      setNews(finalNews.slice(0, 30));
       setLastUpdate(new Date());
+      
     } catch (error) {
-      console.error("Error fetching news:", error);
+      console.error("Error in fetchAllNews:", error);
+      setConnectionError(true);
+      setNews(getMockArticles());
+      setLastUpdate(new Date());
     } finally {
       setLoadingNews(false);
     }
@@ -134,7 +250,7 @@ export function HeroSection() {
     if (autoRefresh) {
       refreshInterval.current = setInterval(() => {
         fetchAllNews();
-      }, 300000); 
+      }, 60000); // تحديث كل 60 ثانية بدلاً من 30
     }
     
     return () => {
@@ -144,7 +260,7 @@ export function HeroSection() {
     };
   }, [autoRefresh]);
 
-  // الرسائل والتحادث
+  // بقية الـ Hooks الخاصة بالمحادثة تبقى كما هي...
   useEffect(() => {
     const saved = localStorage.getItem("chat_messages");
     if (saved) {
@@ -283,15 +399,20 @@ export function HeroSection() {
   };
 
   const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    const now = new Date();
-    const diffMs = now - date;
-    const diffMins = Math.floor(diffMs / 60000);
-    
-    if (diffMins < 1) return "الآن";
-    if (diffMins < 60) return `منذ ${diffMins} دقيقة`;
-    if (diffMins < 1440) return `منذ ${Math.floor(diffMins / 60)} ساعة`;
-    return date.toLocaleDateString("ar-EG");
+    try {
+      const date = new Date(dateString);
+      const now = new Date();
+      const diffMs = now - date;
+      const diffMins = Math.floor(diffMs / 60000);
+      
+      if (isNaN(diffMins)) return "الآن";
+      if (diffMins < 1) return "الآن";
+      if (diffMins < 60) return `منذ ${diffMins} دقيقة`;
+      if (diffMins < 1440) return `منذ ${Math.floor(diffMins / 60)} ساعة`;
+      return date.toLocaleDateString("ar-EG");
+    } catch {
+      return "تاريخ غير معروف";
+    }
   };
 
   const handleKeyDown = (e) => {
@@ -327,6 +448,10 @@ export function HeroSection() {
             <span className="text-xs text-indigo-300">مصادر علمية موثوقة</span>
           </div>
           <img src="/images/logo.svg" alt="Logo" className="h-28 w-28 mx-auto mb-4 hover:scale-105 transition-transform duration-300" />
+          <h1 className="text-3xl font-bold bg-gradient-to-r from-white via-indigo-200 to-white bg-clip-text text-transparent">
+            منصة العلوم العربية
+          </h1>
+          <p className="text-white/50 mt-2">أحدث الأخبار العلمية مع محادثة ذكية</p>
         </div>
 
         <div className="grid lg:grid-cols-2 gap-6">
@@ -376,7 +501,16 @@ export function HeroSection() {
               </div>
 
               {/* قائمة الأخبار */}
-              <div ref={newsRef} className="flex-1 overflow-y-auto p-4 space-y-3 max-h-[500px]">
+              <div ref={chatRef} className="flex-1 overflow-y-auto p-4 space-y-3 max-h-[500px]">
+                {connectionError && !loadingNews && (
+                  <div className="bg-yellow-500/10 border border-yellow-500/30 rounded-xl p-3 mb-3">
+                    <div className="flex items-center gap-2 text-yellow-400 text-sm">
+                      <WifiOff className="w-4 h-4" />
+                      <span>جاري عرض بيانات تجريبية مؤقتاً بسبب مشكلة في الاتصال</span>
+                    </div>
+                  </div>
+                )}
+                
                 {loadingNews ? (
                   <div className="space-y-3">
                     {[1, 2, 3].map((i) => (
@@ -409,7 +543,7 @@ export function HeroSection() {
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2 mb-1 flex-wrap">
                             <span className="text-xs px-2 py-0.5 rounded-full bg-white/10 text-white/60">
-                              {item.source}
+                              {item.source || item.category || "علوم"}
                             </span>
                             <span className="text-xs text-white/30 flex items-center gap-1">
                               <Calendar className="w-3 h-3" />
@@ -425,16 +559,18 @@ export function HeroSection() {
                             {item.description}
                           </div>
                           <div className="flex items-center gap-3 mt-3">
-                            <a
-                              href={item.link}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="text-xs text-indigo-400 hover:text-indigo-300 flex items-center gap-1 transition-colors"
-                              onClick={(e) => e.stopPropagation()}
-                            >
-                              <ExternalLink className="w-3 h-3" />
-                              قراءة المزيد
-                            </a>
+                            {item.link && item.link !== "#" && (
+                              <a
+                                href={item.link}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-xs text-indigo-400 hover:text-indigo-300 flex items-center gap-1 transition-colors"
+                                onClick={(e) => e.stopPropagation()}
+                              >
+                                <ExternalLink className="w-3 h-3" />
+                                قراءة المزيد
+                              </a>
+                            )}
                             <button
                               onClick={(e) => {
                                 e.stopPropagation();
@@ -459,13 +595,13 @@ export function HeroSection() {
                 <div className="flex justify-between items-center text-xs text-white/40">
                   <span>📊 {news.length} خبر علمي</span>
                   <span>🔄 {RSS_FEEDS.length} مصدر موثوق</span>
-                  <span>⚡ تحديث فوري</span>
+                  <span>⚡ تحديث مباشر</span>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* قسم المحادثة */}
+          {/* قسم المحادثة - يبقى كما هو */}
           <div className="lg:order-2 order-1">
             <div className="bg-white/5 border border-white/10 rounded-2xl overflow-hidden backdrop-blur-xl shadow-2xl transition-all duration-300 hover:shadow-indigo-500/10">
               
