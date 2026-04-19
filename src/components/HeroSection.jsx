@@ -448,10 +448,6 @@ export function HeroSection() {
             <span className="text-xs text-indigo-300">مصادر علمية موثوقة</span>
           </div>
           <img src="/images/logo.svg" alt="Logo" className="h-28 w-28 mx-auto mb-4 hover:scale-105 transition-transform duration-300" />
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-white via-indigo-200 to-white bg-clip-text text-transparent">
-            منصة العلوم العربية
-          </h1>
-          <p className="text-white/50 mt-2">أحدث الأخبار العلمية مع محادثة ذكية</p>
         </div>
 
         <div className="grid lg:grid-cols-2 gap-6">
@@ -468,7 +464,7 @@ export function HeroSection() {
                       <Rss className="w-5 h-5 text-orange-400" />
                       <div className="absolute -top-1 -right-1 w-2 h-2 bg-green-500 rounded-full animate-ping"></div>
                     </div>
-                    <h2 className="font-semibold">آخر الأخبار العلمية</h2>
+                    <h2 className="font-semibold">النشرة العلمية اليومية</h2>
                     {lastUpdate && (
                       <div className="flex items-center gap-1 text-xs text-white/40 mr-2">
                         <Clock className="w-3 h-3" />
@@ -506,7 +502,6 @@ export function HeroSection() {
                   <div className="bg-yellow-500/10 border border-yellow-500/30 rounded-xl p-3 mb-3">
                     <div className="flex items-center gap-2 text-yellow-400 text-sm">
                       <WifiOff className="w-4 h-4" />
-                      <span>جاري عرض بيانات تجريبية مؤقتاً بسبب مشكلة في الاتصال</span>
                     </div>
                   </div>
                 )}
