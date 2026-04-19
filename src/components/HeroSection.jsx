@@ -555,11 +555,9 @@ function TimeAndPrayerBar() {
         )}
       </div>
 
-      {/* شريط RSS أسفل الوقت */}
       <div className="mt-2 flex items-center justify-center gap-2">
         <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 backdrop-blur-sm">
           <Rss className="w-2.5 h-2.5 text-indigo-400 animate-pulse" />
-          <span className="text-[9px] text-indigo-300">مصادر علمية موثوقة • تحديث مباشر</span>
         </div>
       </div>
     </div>
