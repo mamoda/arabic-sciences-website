@@ -2,8 +2,8 @@ import { useState, useEffect, useRef } from "react";
 import { 
   Send, Trash2, Sparkles, Copy, Check, AlertCircle, ArrowDown,
   Rss, TrendingUp, Newspaper, BookOpen, Atom, Cpu, RefreshCw,
-  ExternalLink, Calendar, Clock, Zap, WifiOff, Image, Play,
-  ChevronLeft, ChevronRight, X, Maximize2
+  ExternalLink, Calendar, Clock, Zap, WifiOff, Image,
+  ChevronLeft, ChevronRight, X, Moon, MapPin, Compass
 } from "lucide-react";
 
 // قائمة مصادر RSS العلمية المجانية
@@ -86,7 +86,6 @@ const fetchRSSWithRetry = async (url, retries = 2) => {
       
       if (data.status === 'ok' && data.items && data.items.length > 0) {
         const articles = data.items.map(item => {
-          // استخراج الصور من المحتوى
           const contentImages = extractImagesFromContent(item.content || item.description || '');
           const thumbnail = item.thumbnail || 
                            (contentImages.length > 0 ? contentImages[0] : null) ||
@@ -164,6 +163,330 @@ const getMockArticles = () => {
     }
   ];
 };
+
+// ==================== مكون شريط الوقت والصلاة ====================
+function TimeAndPrayerBar() {
+  const [currentTime, setCurrentTime] = useState(new Date());
+  const [currentDate, setCurrentDate] = useState("");
+  const [prayerTimes, setPrayerTimes] = useState(null);
+  const [nextPrayer, setNextPrayer] = useState(null);
+  const [timeToNextPrayer, setTimeToNextPrayer] = useState("");
+  const [is24Hour, setIs24Hour] = useState(true);
+  const [showPrayerDetails, setShowPrayerDetails] = useState(false);
+  const [city, setCity] = useState("Cairo");
+  const [country, setCountry] = useState("Egypt");
+  const [isEditingLocation, setIsEditingLocation] = useState(false);
+  const [tempCity, setTempCity] = useState(city);
+  const [tempCountry, setTempCountry] = useState(country);
+  const [hijriDate, setHijriDate] = useState("");
+
+  // تحديث الوقت
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentTime(new Date());
+    }, 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  // تحديث التاريخ
+  useEffect(() => {
+    const options = { 
+      weekday: 'long', 
+      year: 'numeric', 
+      month: 'long', 
+      day: 'numeric'
+    };
+    setCurrentDate(new Date().toLocaleDateString('ar-EG', options));
+  }, [currentTime]);
+
+  // جلب أوقات الصلاة والتاريخ الهجري
+  useEffect(() => {
+    const fetchTimes = async () => {
+      try {
+        const response = await fetch(
+          `https://api.aladhan.com/v1/timingsByCity?city=${encodeURIComponent(city)}&country=${encodeURIComponent(country)}&method=8`
+        );
+        const data = await response.json();
+        
+        if (data.code === 200 && data.data) {
+          const timings = data.data.timings;
+          setPrayerTimes({
+            fajr: timings.Fajr.substring(0, 5),
+            sunrise: timings.Sunrise.substring(0, 5),
+            dhuhr: timings.Dhuhr.substring(0, 5),
+            asr: timings.Asr.substring(0, 5),
+            maghrib: timings.Maghrib.substring(0, 5),
+            isha: timings.Isha.substring(0, 5)
+          });
+        }
+        
+        const hijriResponse = await fetch(
+          `https://api.aladhan.com/v1/gToH?date=${new Date().getDate()}-${new Date().getMonth() + 1}-${new Date().getFullYear()}`
+        );
+        const hijriData = await hijriResponse.json();
+        if (hijriData.code === 200) {
+          setHijriDate(`${hijriData.data.hijri.day} ${hijriData.data.hijri.month.ar} ${hijriData.data.hijri.year} هـ`);
+        }
+      } catch (error) {
+        console.error("Error fetching prayer times:", error);
+      }
+    };
+    
+    fetchTimes();
+    const interval = setInterval(fetchTimes, 3600000);
+    return () => clearInterval(interval);
+  }, [city, country]);
+
+  // حساب أقرب صلاة
+  useEffect(() => {
+    if (!prayerTimes) return;
+    
+    const now = new Date();
+    const currentHours = now.getHours();
+    const currentMinutes = now.getMinutes();
+    const currentTotal = currentHours * 60 + currentMinutes;
+    
+    const prayers = [
+      { name: "الفجر", time: prayerTimes.fajr, arabicName: "الفجر" },
+      { name: "الشروق", time: prayerTimes.sunrise, arabicName: "الشروق" },
+      { name: "الظهر", time: prayerTimes.dhuhr, arabicName: "الظهر" },
+      { name: "العصر", time: prayerTimes.asr, arabicName: "العصر" },
+      { name: "المغرب", time: prayerTimes.maghrib, arabicName: "المغرب" },
+      { name: "العشاء", time: prayerTimes.isha, arabicName: "العشاء" }
+    ];
+    
+    let next = null;
+    let minDiff = Infinity;
+    
+    for (const prayer of prayers) {
+      const [hours, minutes] = prayer.time.split(":").map(Number);
+      const prayerTotal = hours * 60 + minutes;
+      let diff = prayerTotal - currentTotal;
+      
+      if (diff < 0) {
+        diff += 24 * 60;
+      }
+      
+      if (diff < minDiff) {
+        minDiff = diff;
+        next = prayer;
+      }
+    }
+    
+    if (next) {
+      setNextPrayer(next);
+      const hoursLeft = Math.floor(minDiff / 60);
+      const minutesLeft = minDiff % 60;
+      
+      if (minDiff <= 0) {
+        setTimeToNextPrayer("الآن");
+      } else if (hoursLeft > 0) {
+        setTimeToNextPrayer(`${hoursLeft} ساعة ${minutesLeft > 0 ? `و ${minutesLeft} دقيقة` : ""}`);
+      } else {
+        setTimeToNextPrayer(`${minutesLeft} دقيقة`);
+      }
+    }
+  }, [prayerTimes, currentTime]);
+
+  const formatTime = (date) => {
+    if (is24Hour) {
+      return date.toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    } else {
+      return date.toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
+    }
+  };
+
+  const getPrayerStatus = (prayerTime) => {
+    const now = new Date();
+    const [hours, minutes] = prayerTime.split(":").map(Number);
+    const prayerDate = new Date();
+    prayerDate.setHours(hours, minutes, 0);
+    return now > prayerDate ? "انتهى" : "قادم";
+  };
+
+  const handleLocationSubmit = (e) => {
+    e.preventDefault();
+    if (tempCity && tempCountry) {
+      setCity(tempCity);
+      setCountry(tempCountry);
+      setIsEditingLocation(false);
+    }
+  };
+
+  return (
+    <div className="mb-8 animate-fade-in">
+      <div className="bg-gradient-to-r from-indigo-600/20 via-purple-600/20 to-indigo-600/20 backdrop-blur-xl rounded-2xl border border-white/10 p-4 shadow-2xl">
+        
+        <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+          {/* الوقت والتاريخ */}
+          <div className="text-center md:text-right">
+            <div className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-white to-indigo-200 bg-clip-text text-transparent font-mono tracking-wider">
+              {formatTime(currentTime)}
+            </div>
+            <div className="text-xs text-white/40 mt-1 flex items-center justify-center md:justify-end gap-2">
+              <Calendar className="w-3 h-3" />
+              <span>{currentDate}</span>
+            </div>
+            {hijriDate && (
+              <div className="text-xs text-indigo-300/60 mt-1 flex items-center justify-center md:justify-end gap-2">
+                <Moon className="w-3 h-3" />
+                <span>{hijriDate}</span>
+              </div>
+            )}
+          </div>
+
+          {/* أوقات الصلاة */}
+          <div className="flex-1">
+            <button
+              onClick={() => setShowPrayerDetails(!showPrayerDetails)}
+              className="w-full"
+            >
+              <div className="bg-black/30 rounded-xl p-3 border border-white/10 hover:border-indigo-500/30 transition-all duration-300">
+                <div className="flex items-center justify-between gap-4 flex-wrap">
+                  <div className="flex items-center gap-2">
+                    <div className="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center">
+                      <Moon className="w-4 h-4 text-emerald-400" />
+                    </div>
+                    <div className="text-right">
+                      <div className="text-xs text-white/40">أقرب صلاة</div>
+                      <div className="text-lg font-semibold text-white">
+                        {nextPrayer?.arabicName || "جاري التحميل"}
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="text-center">
+                    <div className="text-xs text-white/40">الوقت المتبقي</div>
+                    <div className="text-xl font-bold text-emerald-400">
+                      {timeToNextPrayer || "--"}
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center gap-2">
+                    <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center">
+                      <MapPin className="w-4 h-4 text-white/60" />
+                    </div>
+                    <div className="text-right">
+                      <div className="text-xs text-white/40">الموقع</div>
+                      <div className="text-sm text-white/80">{city}, {country}</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </button>
+          </div>
+
+          {/* أزرار التحكم */}
+          <div className="flex gap-2">
+            <button
+              onClick={() => setIs24Hour(!is24Hour)}
+              className="p-2 rounded-lg bg-white/5 hover:bg-white/10 transition-all duration-200 group"
+              title="تبديل التنسيق"
+            >
+              <Clock className="w-4 h-4 text-white/60 group-hover:text-white transition-colors" />
+            </button>
+            <button
+              onClick={() => setIsEditingLocation(!isEditingLocation)}
+              className="p-2 rounded-lg bg-white/5 hover:bg-white/10 transition-all duration-200 group"
+              title="تغيير الموقع"
+            >
+              <Compass className="w-4 h-4 text-white/60 group-hover:text-white transition-colors" />
+            </button>
+          </div>
+        </div>
+
+        {/* تفاصيل أوقات الصلاة */}
+        {showPrayerDetails && prayerTimes && (
+          <div className="mt-4 pt-4 border-t border-white/10 animate-slide-in">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+              {Object.entries(prayerTimes).map(([prayer, time]) => {
+                const prayerNames = {
+                  fajr: "الفجر",
+                  sunrise: "الشروق",
+                  dhuhr: "الظهر",
+                  asr: "العصر",
+                  maghrib: "المغرب",
+                  isha: "العشاء"
+                };
+                const status = getPrayerStatus(time);
+                return (
+                  <div key={prayer} className="text-center p-2 bg-white/5 rounded-lg">
+                    <div className="text-xs text-white/40 mb-1">{prayerNames[prayer]}</div>
+                    <div className="text-lg font-semibold text-white">{time}</div>
+                    <div className={`text-xs mt-1 ${status === "قادم" ? "text-emerald-400" : "text-white/30"}`}>
+                      {status}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {/* نافذة تغيير الموقع */}
+        {isEditingLocation && (
+          <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 animate-fade-in" onClick={() => setIsEditingLocation(false)}>
+            <div className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl p-6 max-w-md w-full mx-4 border border-white/10 shadow-2xl" onClick={(e) => e.stopPropagation()}>
+              <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
+                <MapPin className="w-5 h-5 text-indigo-400" />
+                تغيير الموقع
+              </h3>
+              <form onSubmit={handleLocationSubmit}>
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm text-white/60 mb-2">المدينة</label>
+                    <input
+                      type="text"
+                      value={tempCity}
+                      onChange={(e) => setTempCity(e.target.value)}
+                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-white outline-none focus:border-indigo-500 transition-all"
+                      placeholder="مثال: Cairo, Dubai, Riyadh"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm text-white/60 mb-2">الدولة</label>
+                    <input
+                      type="text"
+                      value={tempCountry}
+                      onChange={(e) => setTempCountry(e.target.value)}
+                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-white outline-none focus:border-indigo-500 transition-all"
+                      placeholder="مثال: Egypt, UAE, Saudi Arabia"
+                      required
+                    />
+                  </div>
+                  <div className="flex gap-3">
+                    <button
+                      type="submit"
+                      className="flex-1 bg-gradient-to-r from-indigo-500 to-indigo-600 hover:from-indigo-600 hover:to-indigo-700 py-2 rounded-xl transition-all duration-200"
+                    >
+                      تطبيق
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setIsEditingLocation(false)}
+                      className="flex-1 bg-white/5 hover:bg-white/10 py-2 rounded-xl transition-all duration-200"
+                    >
+                      إلغاء
+                    </button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* شريط RSS أسفل الوقت */}
+      <div className="mt-3 flex items-center justify-center gap-2">
+        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/20 backdrop-blur-sm">
+          <Rss className="w-3 h-3 text-indigo-400 animate-pulse" />
+          <span className="text-[11px] text-indigo-300">مصادر علمية موثوقة • تحديث مباشر</span>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export function HeroSection() {
   const [question, setQuestion] = useState("");
@@ -499,14 +822,8 @@ export function HeroSection() {
 
       <div className="relative max-w-7xl mx-auto z-10">
         
-        {/* الهيدر */}
-        <div className="text-center mb-8 animate-fade-in">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-500/10 border border-indigo-500/20 mb-4 backdrop-blur-sm">
-            <Rss className="w-4 h-4 text-indigo-400 animate-pulse" />
-            <span className="text-xs text-indigo-300">مصادر علمية موثوقة • معرض الصور</span>
-          </div>
-          <img src="/images/logo.svg" alt="Logo" className="h-28 w-28 mx-auto mb-4 hover:scale-105 transition-transform duration-300" />
-        </div>
+        {/* شريط الوقت والصلاة */}
+        <TimeAndPrayerBar />
 
         <div className="grid lg:grid-cols-2 gap-6">
           
@@ -553,7 +870,7 @@ export function HeroSection() {
                 </div>
               </div>
 
-              <div ref={chatRef} className="flex-1 overflow-y-auto p-4 space-y-4 max-h-[500px]">
+              <div className="flex-1 overflow-y-auto p-4 space-y-4 max-h-[500px]">
                 {connectionError && !loadingNews && (
                   <div className="bg-yellow-500/10 border border-yellow-500/30 rounded-xl p-3 mb-3">
                     <div className="flex items-center gap-2 text-yellow-400 text-sm">
@@ -853,7 +1170,7 @@ export function HeroSection() {
                   <span className="text-white/20">|</span>
                   <span className="text-white/30 flex items-center gap-1">
                     <Sparkles className="w-3 h-3" />
-                    Edarty-Ai • معرض الصور العلمية
+                    Edarty-Ai
                   </span>
                 </div>
               </div>
