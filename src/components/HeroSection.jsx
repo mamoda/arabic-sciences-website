@@ -2,70 +2,82 @@ import { useState, useEffect, useRef } from "react";
 import { 
   Send, Trash2, Sparkles, Copy, Check, AlertCircle, ArrowDown,
   Rss, TrendingUp, Newspaper, BookOpen, Atom, Cpu, RefreshCw,
-  ExternalLink, Calendar, Clock, Zap, WifiOff
+  ExternalLink, Calendar, Clock, Zap, WifiOff, Image, Play,
+  ChevronLeft, ChevronRight, X, Maximize2
 } from "lucide-react";
 
-// قائمة مصادر RSS العلمية المجانية (مع روابط بديلة)
+// قائمة مصادر RSS العلمية المجانية
 const RSS_FEEDS = [
   {
     id: 1,
     name: "Nature News",
     url: "https://www.nature.com/nature/articles.rss",
-    backupUrl: "https://feeds.nature.com/nature/rss/current",
     category: "العلوم الطبيعية",
     icon: <Atom className="w-4 h-4" />,
-    color: "from-emerald-500 to-teal-600"
+    color: "from-emerald-500 to-teal-600",
+    hasImages: true
   },
   {
     id: 2,
     name: "Science Daily",
     url: "https://www.sciencedaily.com/rss/all.xml",
-    backupUrl: "https://www.sciencedaily.com/rss/top.xml",
     category: "العلوم المتعددة",
     icon: <BookOpen className="w-4 h-4" />,
-    color: "from-blue-500 to-cyan-600"
+    color: "from-blue-500 to-cyan-600",
+    hasImages: true
   },
   {
     id: 3,
     name: "MIT Technology Review",
     url: "https://www.technologyreview.com/feed/",
-    backupUrl: "https://www.technologyreview.com/feed/top/",
     category: "التقنية",
     icon: <Cpu className="w-4 h-4" />,
-    color: "from-purple-500 to-pink-600"
+    color: "from-purple-500 to-pink-600",
+    hasImages: true
   },
   {
     id: 4,
     name: "Space.com",
     url: "https://www.space.com/feeds/all",
-    backupUrl: "https://www.space.com/feeds/news",
     category: "الفضاء",
     icon: <TrendingUp className="w-4 h-4" />,
-    color: "from-orange-500 to-red-600"
+    color: "from-orange-500 to-red-600",
+    hasImages: true
   },
   {
     id: 5,
     name: "Science News",
     url: "https://www.sciencenews.org/feed",
-    backupUrl: "https://www.sciencenews.org/feed/news",
     category: "العلوم العامة",
     icon: <Zap className="w-4 h-4" />,
-    color: "from-green-500 to-emerald-600"
+    color: "from-green-500 to-emerald-600",
+    hasImages: true
   }
 ];
+
+// استخراج الصور من محتوى RSS
+const extractImagesFromContent = (content) => {
+  if (!content) return [];
+  const imgRegex = /<img[^>]+src="([^">]+)"/g;
+  const images = [];
+  let match;
+  while ((match = imgRegex.exec(content)) !== null) {
+    if (match[1] && !match[1].includes('logo') && !match[1].includes('icon')) {
+      images.push(match[1]);
+    }
+  }
+  return images;
+};
 
 // خدمة جلب RSS باستخدام طرق متعددة
 const fetchRSSWithRetry = async (url, retries = 2) => {
   for (let i = 0; i <= retries; i++) {
     try {
-      // استخدام خدمة RSS2JSON كبديل رئيسي
       const rss2jsonUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(url)}`;
       const response = await fetch(rss2jsonUrl, {
         method: 'GET',
-        headers: {
-          'Accept': 'application/json',
-        },
-        signal: AbortSignal.timeout(10000) // 10 seconds timeout
+        headers: { 'Accept': 'application/json' },
+        signal: AbortSignal.timeout(10000)
       });
       
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
@@ -73,15 +85,26 @@ const fetchRSSWithRetry = async (url, retries = 2) => {
       const data = await response.json();
       
       if (data.status === 'ok' && data.items && data.items.length > 0) {
-        // تحويل البيانات من RSS2JSON إلى التنسيق المطلوب
-        const articles = data.items.map(item => ({
-          title: item.title || "بدون عنوان",
-          link: item.link || "#",
-          description: item.description?.replace(/<[^>]*>/g, '') || item.content?.replace(/<[^>]*>/g, '') || "لا يوجد وصف",
-          pubDate: item.pubDate || new Date().toISOString(),
-          author: item.author || data.feed?.title || "المصدر العلمي",
-          thumbnail: item.thumbnail || item.enclosure?.link || null
-        }));
+        const articles = data.items.map(item => {
+          // استخراج الصور من المحتوى
+          const contentImages = extractImagesFromContent(item.content || item.description || '');
+          const thumbnail = item.thumbnail || 
+                           (contentImages.length > 0 ? contentImages[0] : null) ||
+                           `https://picsum.photos/seed/${Math.random()}/400/200`;
+          
+          return {
+            title: item.title || "بدون عنوان",
+            link: item.link || "#",
+            description: item.description?.replace(/<[^>]*>/g, '') || 
+                        item.content?.replace(/<[^>]*>/g, '') || 
+                        "لا يوجد وصف",
+            pubDate: item.pubDate || new Date().toISOString(),
+            author: item.author || data.feed?.title || "المصدر العلمي",
+            thumbnail: thumbnail,
+            images: contentImages.length > 0 ? contentImages : [thumbnail],
+            enclosure: item.enclosure?.link || null
+          };
+        });
         
         if (articles.length > 0) return articles;
       }
@@ -90,21 +113,14 @@ const fetchRSSWithRetry = async (url, retries = 2) => {
       
     } catch (error) {
       console.warn(`Attempt ${i + 1} failed for ${url}:`, error.message);
-      
-      if (i === retries) {
-        // المحاولة الأخيرة فشلت
-        return [];
-      }
-      
-      // انتظار قبل إعادة المحاولة
+      if (i === retries) return [];
       await new Promise(resolve => setTimeout(resolve, 1000 * (i + 1)));
     }
   }
-  
   return [];
 };
 
-// بيانات تجريبية للاستخدام عند فشل جميع المحاولات
+// بيانات تجريبية مع صور
 const getMockArticles = () => {
   return [
     {
@@ -116,7 +132,9 @@ const getMockArticles = () => {
       source: "العلوم الطبية",
       sourceIcon: <Zap className="w-4 h-4" />,
       sourceColor: "from-green-500 to-emerald-600",
-      category: "الصحة"
+      category: "الصحة",
+      thumbnail: "https://images.unsplash.com/photo-1576081141729-b6b2a0ff5f2e?w=400&h=200&fit=crop",
+      images: ["https://images.unsplash.com/photo-1576081141729-b6b2a0ff5f2e?w=800&h=400&fit=crop"]
     },
     {
       title: "تلسكوب جيمس ويب يكتشف أبعد مجرة تم رصدها على الإطلاق",
@@ -127,7 +145,9 @@ const getMockArticles = () => {
       source: "الفضاء",
       sourceIcon: <TrendingUp className="w-4 h-4" />,
       sourceColor: "from-orange-500 to-red-600",
-      category: "الفضاء"
+      category: "الفضاء",
+      thumbnail: "https://images.unsplash.com/photo-1462331940025-496dfbfc7564?w=400&h=200&fit=crop",
+      images: ["https://images.unsplash.com/photo-1462331940025-496dfbfc7564?w=800&h=400&fit=crop"]
     },
     {
       title: "تطور جديد في الذكاء الاصطناعي التوليدي",
@@ -138,29 +158,9 @@ const getMockArticles = () => {
       source: "التقنية",
       sourceIcon: <Cpu className="w-4 h-4" />,
       sourceColor: "from-purple-500 to-pink-600",
-      category: "التقنية"
-    },
-    {
-      title: "تغير المناخ: 2025 هو العام الأكثر حرارة في التاريخ",
-      link: "#",
-      description: "تشير البيانات إلى أن متوسط درجات الحرارة العالمية تجاوز الرقم القياسي السابق، مما يدق ناقوس الخطر بشأن ظاهرة الاحتباس الحراري.",
-      pubDate: new Date(Date.now() - 10800000).toISOString(),
-      author: "Science Daily",
-      source: "العلوم البيئية",
-      sourceIcon: <BookOpen className="w-4 h-4" />,
-      sourceColor: "from-blue-500 to-cyan-600",
-      category: "البيئة"
-    },
-    {
-      title: "اكتشاف مضاد حيوي جديد من تربة غير مأهولة",
-      link: "#",
-      description: "باحثون يكتشفون مركباً طبيعياً في تربة من منطقة نائية يظهر فعالية ضد البكتيريا المقاومة للمضادات الحيوية.",
-      pubDate: new Date(Date.now() - 14400000).toISOString(),
-      author: "Nature",
-      source: "العلوم الطبيعية",
-      sourceIcon: <Atom className="w-4 h-4" />,
-      sourceColor: "from-emerald-500 to-teal-600",
-      category: "العلوم الطبيعية"
+      category: "التقنية",
+      thumbnail: "https://images.unsplash.com/photo-1677442136019-21780ecad995?w=400&h=200&fit=crop",
+      images: ["https://images.unsplash.com/photo-1677442136019-21780ecad995?w=800&h=400&fit=crop"]
     }
   ];
 };
@@ -178,6 +178,10 @@ export function HeroSection() {
   const [autoRefresh, setAutoRefresh] = useState(true);
   const [expandedNews, setExpandedNews] = useState(null);
   const [connectionError, setConnectionError] = useState(false);
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [currentArticleImages, setCurrentArticleImages] = useState([]);
+  const [imageLoadErrors, setImageLoadErrors] = useState({});
 
   const chatRef = useRef(null);
   const inputRef = useRef(null);
@@ -190,8 +194,6 @@ export function HeroSection() {
     
     try {
       const allArticles = [];
-      
-      // محاولة جلب البيانات من جميع المصادر
       const fetchPromises = RSS_FEEDS.map(async (feed) => {
         try {
           const articles = await fetchRSSWithRetry(feed.url);
@@ -220,13 +222,11 @@ export function HeroSection() {
         }
       });
       
-      // إذا لم يتم جلب أي بيانات، استخدم البيانات التجريبية
       let finalNews = allArticles;
       if (finalNews.length === 0) {
         setConnectionError(true);
         finalNews = getMockArticles();
       } else {
-        // ترتيب حسب التاريخ
         finalNews.sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate));
       }
       
@@ -243,6 +243,31 @@ export function HeroSection() {
     }
   };
 
+  // فتح معرض الصور
+  const openLightbox = (images, index) => {
+    setCurrentArticleImages(images);
+    setCurrentImageIndex(index);
+    setLightboxOpen(true);
+    document.body.style.overflow = 'hidden';
+  };
+
+  const closeLightbox = () => {
+    setLightboxOpen(false);
+    document.body.style.overflow = 'auto';
+  };
+
+  const nextImage = () => {
+    setCurrentImageIndex((prev) => (prev + 1) % currentArticleImages.length);
+  };
+
+  const prevImage = () => {
+    setCurrentImageIndex((prev) => (prev - 1 + currentArticleImages.length) % currentArticleImages.length);
+  };
+
+  const handleImageError = (articleId) => {
+    setImageLoadErrors(prev => ({ ...prev, [articleId]: true }));
+  };
+
   // تحديث تلقائي
   useEffect(() => {
     fetchAllNews();
@@ -250,7 +275,7 @@ export function HeroSection() {
     if (autoRefresh) {
       refreshInterval.current = setInterval(() => {
         fetchAllNews();
-      }, 60000); // تحديث كل 60 ثانية بدلاً من 30
+      }, 60000);
     }
     
     return () => {
@@ -260,7 +285,7 @@ export function HeroSection() {
     };
   }, [autoRefresh]);
 
-  // بقية الـ Hooks الخاصة بالمحادثة تبقى كما هي...
+  // باقي الـ Hooks
   useEffect(() => {
     const saved = localStorage.getItem("chat_messages");
     if (saved) {
@@ -439,24 +464,56 @@ export function HeroSection() {
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl animate-pulse delay-2000"></div>
       </div>
 
+      {/* Lightbox للمعرض */}
+      {lightboxOpen && (
+        <div className="fixed inset-0 z-50 bg-black/95 backdrop-blur-lg flex items-center justify-center animate-fade-in" onClick={closeLightbox}>
+          <button
+            onClick={closeLightbox}
+            className="absolute top-4 right-4 z-10 p-2 rounded-full bg-white/10 hover:bg-white/20 transition-all duration-200"
+          >
+            <X className="w-6 h-6" />
+          </button>
+          <button
+            onClick={(e) => { e.stopPropagation(); prevImage(); }}
+            className="absolute left-4 z-10 p-2 rounded-full bg-white/10 hover:bg-white/20 transition-all duration-200"
+          >
+            <ChevronLeft className="w-6 h-6" />
+          </button>
+          <button
+            onClick={(e) => { e.stopPropagation(); nextImage(); }}
+            className="absolute right-4 z-10 p-2 rounded-full bg-white/10 hover:bg-white/20 transition-all duration-200"
+          >
+            <ChevronRight className="w-6 h-6" />
+          </button>
+          <img
+            src={currentArticleImages[currentImageIndex]}
+            alt={`صورة ${currentImageIndex + 1}`}
+            className="max-w-[90vw] max-h-[90vh] object-contain rounded-xl shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          />
+          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black/50 px-3 py-1 rounded-full text-sm">
+            {currentImageIndex + 1} / {currentArticleImages.length}
+          </div>
+        </div>
+      )}
+
       <div className="relative max-w-7xl mx-auto z-10">
         
         {/* الهيدر */}
         <div className="text-center mb-8 animate-fade-in">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-500/10 border border-indigo-500/20 mb-4 backdrop-blur-sm">
             <Rss className="w-4 h-4 text-indigo-400 animate-pulse" />
-            <span className="text-xs text-indigo-300">مصادر علمية موثوقة</span>
+            <span className="text-xs text-indigo-300">مصادر علمية موثوقة • معرض الصور</span>
           </div>
           <img src="/images/logo.svg" alt="Logo" className="h-28 w-28 mx-auto mb-4 hover:scale-105 transition-transform duration-300" />
         </div>
 
         <div className="grid lg:grid-cols-2 gap-6">
           
-          {/* قسم RSS - الأخبار العلمية */}
+          {/* قسم RSS - الأخبار العلمية مع الصور */}
           <div className="lg:order-1 order-2">
             <div className="bg-white/5 border border-white/10 rounded-2xl overflow-hidden backdrop-blur-xl shadow-2xl transition-all duration-300 hover:shadow-indigo-500/10 h-full flex flex-col">
               
-              {/* عنوان RSS */}
               <div className="border-b border-white/10 px-6 py-4 bg-black/30">
                 <div className="flex justify-between items-center flex-wrap gap-3">
                   <div className="flex items-center gap-2">
@@ -464,7 +521,7 @@ export function HeroSection() {
                       <Rss className="w-5 h-5 text-orange-400" />
                       <div className="absolute -top-1 -right-1 w-2 h-2 bg-green-500 rounded-full animate-ping"></div>
                     </div>
-                    <h2 className="font-semibold">النشرة العلمية اليومية</h2>
+                    <h2 className="font-semibold">النشرة العلمية المصورة</h2>
                     {lastUpdate && (
                       <div className="flex items-center gap-1 text-xs text-white/40 mr-2">
                         <Clock className="w-3 h-3" />
@@ -496,24 +553,27 @@ export function HeroSection() {
                 </div>
               </div>
 
-              {/* قائمة الأخبار */}
-              <div ref={chatRef} className="flex-1 overflow-y-auto p-4 space-y-3 max-h-[500px]">
+              <div ref={chatRef} className="flex-1 overflow-y-auto p-4 space-y-4 max-h-[500px]">
                 {connectionError && !loadingNews && (
                   <div className="bg-yellow-500/10 border border-yellow-500/30 rounded-xl p-3 mb-3">
                     <div className="flex items-center gap-2 text-yellow-400 text-sm">
                       <WifiOff className="w-4 h-4" />
+                      <span>جاري عرض بيانات تجريبية مؤقتاً</span>
                     </div>
                   </div>
                 )}
                 
                 {loadingNews ? (
-                  <div className="space-y-3">
+                  <div className="space-y-4">
                     {[1, 2, 3].map((i) => (
                       <div key={i} className="animate-pulse">
-                        <div className="bg-white/5 rounded-xl p-4">
-                          <div className="h-4 bg-white/10 rounded w-3/4 mb-2"></div>
-                          <div className="h-3 bg-white/5 rounded w-full mb-1"></div>
-                          <div className="h-3 bg-white/5 rounded w-2/3"></div>
+                        <div className="bg-white/5 rounded-xl overflow-hidden">
+                          <div className="h-48 bg-white/10"></div>
+                          <div className="p-4">
+                            <div className="h-4 bg-white/10 rounded w-3/4 mb-2"></div>
+                            <div className="h-3 bg-white/5 rounded w-full mb-1"></div>
+                            <div className="h-3 bg-white/5 rounded w-2/3"></div>
+                          </div>
                         </div>
                       </div>
                     ))}
@@ -524,28 +584,52 @@ export function HeroSection() {
                     <p>لا توجد أخبار حالياً</p>
                   </div>
                 ) : (
-                  news.map((item, idx) => (
-                    <div
-                      key={idx}
-                      className="group bg-white/5 hover:bg-white/10 rounded-xl p-4 transition-all duration-300 hover:scale-[1.02] hover:shadow-lg cursor-pointer animate-slide-in"
-                      style={{ animationDelay: `${idx * 50}ms` }}
-                      onClick={() => setExpandedNews(expandedNews === idx ? null : idx)}
-                    >
-                      <div className="flex items-start gap-3">
-                        <div className={`w-8 h-8 rounded-lg bg-gradient-to-r ${item.sourceColor} flex items-center justify-center shrink-0`}>
-                          {item.sourceIcon}
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-2 mb-1 flex-wrap">
-                            <span className="text-xs px-2 py-0.5 rounded-full bg-white/10 text-white/60">
-                              {item.source || item.category || "علوم"}
-                            </span>
+                  news.map((item, idx) => {
+                    const hasValidImage = item.thumbnail && !imageLoadErrors[idx];
+                    return (
+                      <div
+                        key={idx}
+                        className="group bg-white/5 hover:bg-white/10 rounded-xl overflow-hidden transition-all duration-300 hover:scale-[1.02] hover:shadow-lg cursor-pointer"
+                        onClick={() => setExpandedNews(expandedNews === idx ? null : idx)}
+                      >
+                        {/* صورة الخبر */}
+                        {hasValidImage && (
+                          <div className="relative h-48 overflow-hidden">
+                            <img
+                              src={item.thumbnail}
+                              alt={item.title}
+                              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                              onError={() => handleImageError(idx)}
+                              loading="lazy"
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+                            <div className="absolute top-2 left-2 flex gap-1">
+                              <span className={`text-xs px-2 py-1 rounded-full bg-gradient-to-r ${item.sourceColor} shadow-lg`}>
+                                {item.source}
+                              </span>
+                            </div>
+                            {item.images && item.images.length > 1 && (
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  openLightbox(item.images, 0);
+                                }}
+                                className="absolute bottom-2 right-2 p-1.5 rounded-lg bg-black/50 hover:bg-black/70 transition-all duration-200 backdrop-blur-sm"
+                              >
+                                <Image className="w-4 h-4" />
+                              </button>
+                            )}
+                          </div>
+                        )}
+                        
+                        <div className="p-4">
+                          <div className="flex items-center gap-2 mb-2 flex-wrap">
                             <span className="text-xs text-white/30 flex items-center gap-1">
                               <Calendar className="w-3 h-3" />
                               {formatDate(item.pubDate)}
                             </span>
                           </div>
-                          <h3 className="font-medium text-sm mb-2 line-clamp-2 group-hover:text-indigo-300 transition-colors">
+                          <h3 className="font-semibold text-base mb-2 line-clamp-2 group-hover:text-indigo-300 transition-colors">
                             {item.title}
                           </h3>
                           <div className={`text-xs text-white/40 leading-relaxed transition-all duration-300 ${
@@ -577,26 +661,37 @@ export function HeroSection() {
                               <Send className="w-3 h-3" />
                               اسأل عن الخبر
                             </button>
+                            {item.images && item.images.length > 0 && (
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  openLightbox(item.images, 0);
+                                }}
+                                className="text-xs text-white/40 hover:text-white transition-colors flex items-center gap-1"
+                              >
+                                <Image className="w-3 h-3" />
+                                معرض الصور
+                              </button>
+                            )}
                           </div>
                         </div>
                       </div>
-                    </div>
-                  ))
+                    );
+                  })
                 )}
               </div>
 
-              {/* إحصائيات RSS */}
               <div className="border-t border-white/10 px-6 py-3 bg-black/20">
                 <div className="flex justify-between items-center text-xs text-white/40">
-                  <span>📊 {news.length} خبر علمي</span>
+                  <span>📊 {news.length} خبر علمي مصور</span>
                   <span>🔄 {RSS_FEEDS.length} مصدر موثوق</span>
-                  <span>⚡ تحديث مباشر</span>
+                  <span>🖼️ معرض صور تفاعلي</span>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* قسم المحادثة - يبقى كما هو */}
+          {/* قسم المحادثة */}
           <div className="lg:order-2 order-1">
             <div className="bg-white/5 border border-white/10 rounded-2xl overflow-hidden backdrop-blur-xl shadow-2xl transition-all duration-300 hover:shadow-indigo-500/10">
               
@@ -625,7 +720,7 @@ export function HeroSection() {
                     </div>
                     <h3 className="text-white/60 font-medium mb-2">مرحباً بك في المنصة العلمية!</h3>
                     <p className="text-white/40 text-sm max-w-md">
-                      يمكنك سؤالي عن أي موضوع في العلوم، وسأجيبك بدقة مع الاستفادة من آخر الأخبار العلمية
+                      يمكنك سؤالي عن أي موضوع في العلوم، وسأجيبك بدقة مع الاستفادة من آخر الأخبار العلمية المصورة
                     </p>
                     <div className="flex flex-wrap gap-2 mt-6 justify-center">
                       {["ما هي آخر discoveries في الفضاء؟", "أحدث علاجات السرطان", "تطورات الذكاء الاصطناعي"].map((suggestion) => (
@@ -758,7 +853,7 @@ export function HeroSection() {
                   <span className="text-white/20">|</span>
                   <span className="text-white/30 flex items-center gap-1">
                     <Sparkles className="w-3 h-3" />
-                    Edarty-Ai • مدعوم بـ RSS علمي
+                    Edarty-Ai • معرض الصور العلمية
                   </span>
                 </div>
               </div>
