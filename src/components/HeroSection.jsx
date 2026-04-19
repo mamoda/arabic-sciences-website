@@ -179,6 +179,7 @@ function TimeAndPrayerBar() {
   const [tempCity, setTempCity] = useState(city);
   const [tempCountry, setTempCountry] = useState(country);
   const [hijriDate, setHijriDate] = useState("");
+  const [prayerError, setPrayerError] = useState(false);
 
   // تحديث الوقت
   useEffect(() => {
@@ -199,12 +200,41 @@ function TimeAndPrayerBar() {
     setCurrentDate(new Date().toLocaleDateString('ar-EG', options));
   }, [currentTime]);
 
+  // أوقات الصلاة التقريبية (في حالة فشل API)
+  const getApproximatePrayerTimes = () => {
+    const now = new Date();
+    const month = now.getMonth();
+    const isWinter = month >= 10 || month <= 2; // تقريباً شتاء
+    
+    if (isWinter) {
+      return {
+        fajr: "05:30",
+        sunrise: "06:45",
+        dhuhr: "12:00",
+        asr: "15:15",
+        maghrib: "17:00",
+        isha: "18:30"
+      };
+    } else {
+      return {
+        fajr: "04:30",
+        sunrise: "05:45",
+        dhuhr: "12:00",
+        asr: "15:45",
+        maghrib: "18:30",
+        isha: "20:00"
+      };
+    }
+  };
+
   // جلب أوقات الصلاة والتاريخ الهجري
   useEffect(() => {
     const fetchTimes = async () => {
+      setPrayerError(false);
       try {
+        // محاولة جلب البيانات من API
         const response = await fetch(
-          `https://api.aladhan.com/v1/timingsByCity?city=${encodeURIComponent(city)}&country=${encodeURIComponent(country)}&method=8`
+          `https://api.aladhan.com/v1/timingsByCity?city=${encodeURIComponent(city)}&country=${encodeURIComponent(country)}&method=5`
         );
         const data = await response.json();
         
@@ -218,17 +248,26 @@ function TimeAndPrayerBar() {
             maghrib: timings.Maghrib.substring(0, 5),
             isha: timings.Isha.substring(0, 5)
           });
-        }
-        
-        const hijriResponse = await fetch(
-          `https://api.aladhan.com/v1/gToH?date=${new Date().getDate()}-${new Date().getMonth() + 1}-${new Date().getFullYear()}`
-        );
-        const hijriData = await hijriResponse.json();
-        if (hijriData.code === 200) {
-          setHijriDate(`${hijriData.data.hijri.day} ${hijriData.data.hijri.month.ar} ${hijriData.data.hijri.year} هـ`);
+          
+          // جلب التاريخ الهجري
+          const hijriResponse = await fetch(
+            `https://api.aladhan.com/v1/gToH?date=${now.getDate()}-${now.getMonth() + 1}-${now.getFullYear()}`
+          );
+          const hijriData = await hijriResponse.json();
+          if (hijriData.code === 200) {
+            setHijriDate(`${hijriData.data.hijri.day} ${hijriData.data.hijri.month.ar} ${hijriData.data.hijri.year} هـ`);
+          }
+        } else {
+          throw new Error("Invalid response");
         }
       } catch (error) {
         console.error("Error fetching prayer times:", error);
+        setPrayerError(true);
+        // استخدام أوقات تقريبية في حالة فشل API
+        setPrayerTimes(getApproximatePrayerTimes());
+        
+        // تاريخ هجري تقريبي
+        setHijriDate("جاري التحميل...");
       }
     };
     
@@ -297,6 +336,7 @@ function TimeAndPrayerBar() {
   };
 
   const getPrayerStatus = (prayerTime) => {
+    if (!prayerTime) return "";
     const now = new Date();
     const [hours, minutes] = prayerTime.split(":").map(Number);
     const prayerDate = new Date();
@@ -314,23 +354,29 @@ function TimeAndPrayerBar() {
   };
 
   return (
-    <div className="mb-8 animate-fade-in">
+    <div className="w-full pt-4 px-4 animate-fade-in">
       <div className="bg-gradient-to-r from-indigo-600/20 via-purple-600/20 to-indigo-600/20 backdrop-blur-xl rounded-2xl border border-white/10 p-4 shadow-2xl">
         
         <div className="flex flex-col md:flex-row justify-between items-center gap-4">
           {/* الوقت والتاريخ */}
           <div className="text-center md:text-right">
-            <div className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-white to-indigo-200 bg-clip-text text-transparent font-mono tracking-wider">
+            <div className="text-3xl md:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-white to-indigo-200 bg-clip-text text-transparent font-mono tracking-wider">
               {formatTime(currentTime)}
             </div>
             <div className="text-xs text-white/40 mt-1 flex items-center justify-center md:justify-end gap-2">
               <Calendar className="w-3 h-3" />
               <span>{currentDate}</span>
             </div>
-            {hijriDate && (
+            {hijriDate && hijriDate !== "جاري التحميل..." && (
               <div className="text-xs text-indigo-300/60 mt-1 flex items-center justify-center md:justify-end gap-2">
                 <Moon className="w-3 h-3" />
                 <span>{hijriDate}</span>
+              </div>
+            )}
+            {prayerError && (
+              <div className="text-xs text-yellow-400/60 mt-1 flex items-center justify-center md:justify-end gap-2">
+                <AlertCircle className="w-3 h-3" />
+                <span>أوقات تقريبية</span>
               </div>
             )}
           </div>
@@ -412,7 +458,7 @@ function TimeAndPrayerBar() {
                 return (
                   <div key={prayer} className="text-center p-2 bg-white/5 rounded-lg">
                     <div className="text-xs text-white/40 mb-1">{prayerNames[prayer]}</div>
-                    <div className="text-lg font-semibold text-white">{time}</div>
+                    <div className="text-base md:text-lg font-semibold text-white">{time}</div>
                     <div className={`text-xs mt-1 ${status === "قادم" ? "text-emerald-400" : "text-white/30"}`}>
                       {status}
                     </div>
@@ -477,7 +523,7 @@ function TimeAndPrayerBar() {
         )}
       </div>
 
-      شريط RSS أسفل الوقت
+      {/* شريط RSS أسفل الوقت */}
       <div className="mt-3 flex items-center justify-center gap-2">
         <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/20 backdrop-blur-sm">
           <Rss className="w-3 h-3 text-indigo-400 animate-pulse" />
@@ -778,7 +824,7 @@ export function HeroSection() {
   };
 
   return (
-    <section className="relative min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-white px-4 py-8">
+    <section className="relative min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-white">
       
       {/* خلفية متحركة */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
@@ -820,12 +866,14 @@ export function HeroSection() {
         </div>
       )}
 
-      <div className="relative max-w-7xl mx-auto z-10">
+      <div className="relative max-w-7xl mx-auto z-10 px-4 pb-8">
         
-        {/* شريط الوقت والصلاة */}
-        <TimeAndPrayerBar />
+        {/* شريط الوقت والصلاة - مع مسافة من الأعلى */}
+        <div className="pt-2">
+          <TimeAndPrayerBar />
+        </div>
 
-        <div className="grid lg:grid-cols-2 gap-6">
+        <div className="grid lg:grid-cols-2 gap-6 mt-6">
           
           {/* قسم RSS - الأخبار العلمية مع الصور */}
           <div className="lg:order-1 order-2">
