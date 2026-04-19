@@ -1,3 +1,39 @@
+// منع أخطاء إضافات المتصفح من الظهور في الكونسول
+if (typeof window !== 'undefined') {
+  const originalError = console.error;
+  const originalWarn = console.warn;
+  
+  const blockedErrors = [
+    'Could not establish connection',
+    'Receiving end does not exist',
+    'Extension context invalidated',
+    'message port closed',
+    'chrome.runtime',
+    'browser.runtime',
+    'Error in event handler',
+    'Already creating a port',
+    'Port error',
+    'Connection failed',
+    'Extension disconnected'
+  ];
+  
+  console.error = function(...args) {
+    const message = args[0]?.toString() || '';
+    if (blockedErrors.some(error => message.includes(error))) {
+      return;
+    }
+    originalError.apply(console, args);
+  };
+  
+  console.warn = function(...args) {
+    const message = args[0]?.toString() || '';
+    if (blockedErrors.some(error => message.includes(error))) {
+      return;
+    }
+    originalWarn.apply(console, args);
+  };
+}
+
 import { useState, useEffect, useRef } from "react";
 import { 
   Send, Trash2, Sparkles, Copy, Check, AlertCircle, ArrowDown,
@@ -232,7 +268,6 @@ function TimeAndPrayerBar() {
     const fetchTimes = async () => {
       setPrayerError(false);
       try {
-        // محاولة جلب البيانات من API
         const response = await fetch(
           `https://api.aladhan.com/v1/timingsByCity?city=${encodeURIComponent(city)}&country=${encodeURIComponent(country)}&method=5`
         );
@@ -249,7 +284,6 @@ function TimeAndPrayerBar() {
             isha: timings.Isha.substring(0, 5)
           });
           
-          // جلب التاريخ الهجري
           const currentDate = new Date();
           const hijriResponse = await fetch(
             `https://api.aladhan.com/v1/gToH?date=${currentDate.getDate()}-${currentDate.getMonth() + 1}-${currentDate.getFullYear()}`
@@ -264,10 +298,7 @@ function TimeAndPrayerBar() {
       } catch (error) {
         console.error("Error fetching prayer times:", error);
         setPrayerError(true);
-        // استخدام أوقات تقريبية في حالة فشل API
         setPrayerTimes(getApproximatePrayerTimes());
-        
-        // تاريخ هجري تقريبي
         setHijriDate("جاري التحميل...");
       }
     };
@@ -355,28 +386,28 @@ function TimeAndPrayerBar() {
   };
 
   return (
-    <div className="w-full pt-4 px-4 animate-fade-in">
-      <div className="bg-gradient-to-r from-indigo-600/20 via-purple-600/20 to-indigo-600/20 backdrop-blur-xl rounded-2xl border border-white/10 p-4 shadow-2xl">
+    <div className="w-full pt-2 px-4 animate-fade-in">
+      <div className="bg-gradient-to-r from-indigo-600/20 via-purple-600/20 to-indigo-600/20 backdrop-blur-xl rounded-2xl border border-white/10 p-3 shadow-2xl">
         
-        <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+        <div className="flex flex-col md:flex-row justify-between items-center gap-3">
           {/* الوقت والتاريخ */}
           <div className="text-center md:text-right">
-            <div className="text-3xl md:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-white to-indigo-200 bg-clip-text text-transparent font-mono tracking-wider">
+            <div className="text-2xl md:text-3xl lg:text-4xl font-bold bg-gradient-to-r from-white to-indigo-200 bg-clip-text text-transparent font-mono tracking-wider">
               {formatTime(currentTime)}
             </div>
-            <div className="text-xs text-white/40 mt-1 flex items-center justify-center md:justify-end gap-2">
-              <Calendar className="w-3 h-3" />
+            <div className="text-[10px] text-white/40 mt-0.5 flex items-center justify-center md:justify-end gap-1">
+              <Calendar className="w-2.5 h-2.5" />
               <span>{currentDate}</span>
             </div>
             {hijriDate && hijriDate !== "جاري التحميل..." && (
-              <div className="text-xs text-indigo-300/60 mt-1 flex items-center justify-center md:justify-end gap-2">
-                <Moon className="w-3 h-3" />
+              <div className="text-[10px] text-indigo-300/60 mt-0.5 flex items-center justify-center md:justify-end gap-1">
+                <Moon className="w-2.5 h-2.5" />
                 <span>{hijriDate}</span>
               </div>
             )}
             {prayerError && (
-              <div className="text-xs text-yellow-400/60 mt-1 flex items-center justify-center md:justify-end gap-2">
-                <AlertCircle className="w-3 h-3" />
+              <div className="text-[10px] text-yellow-400/60 mt-0.5 flex items-center justify-center md:justify-end gap-1">
+                <AlertCircle className="w-2.5 h-2.5" />
                 <span>أوقات تقريبية</span>
               </div>
             )}
@@ -388,34 +419,34 @@ function TimeAndPrayerBar() {
               onClick={() => setShowPrayerDetails(!showPrayerDetails)}
               className="w-full"
             >
-              <div className="bg-black/30 rounded-xl p-3 border border-white/10 hover:border-indigo-500/30 transition-all duration-300">
-                <div className="flex items-center justify-between gap-4 flex-wrap">
+              <div className="bg-black/30 rounded-xl p-2 border border-white/10 hover:border-indigo-500/30 transition-all duration-300">
+                <div className="flex items-center justify-between gap-3 flex-wrap">
                   <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center">
-                      <Moon className="w-4 h-4 text-emerald-400" />
+                    <div className="w-7 h-7 rounded-full bg-emerald-500/20 flex items-center justify-center">
+                      <Moon className="w-3.5 h-3.5 text-emerald-400" />
                     </div>
                     <div className="text-right">
-                      <div className="text-xs text-white/40">أقرب صلاة</div>
-                      <div className="text-lg font-semibold text-white">
+                      <div className="text-[10px] text-white/40">أقرب صلاة</div>
+                      <div className="text-base font-semibold text-white">
                         {nextPrayer?.arabicName || "جاري التحميل"}
                       </div>
                     </div>
                   </div>
                   
                   <div className="text-center">
-                    <div className="text-xs text-white/40">الوقت المتبقي</div>
-                    <div className="text-xl font-bold text-emerald-400">
+                    <div className="text-[10px] text-white/40">الوقت المتبقي</div>
+                    <div className="text-lg font-bold text-emerald-400">
                       {timeToNextPrayer || "--"}
                     </div>
                   </div>
                   
-                  <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center">
-                      <MapPin className="w-4 h-4 text-white/60" />
+                  <div className="flex items-center gap-1.5">
+                    <div className="w-7 h-7 rounded-full bg-white/10 flex items-center justify-center">
+                      <MapPin className="w-3.5 h-3.5 text-white/60" />
                     </div>
                     <div className="text-right">
-                      <div className="text-xs text-white/40">الموقع</div>
-                      <div className="text-sm text-white/80">{city}, {country}</div>
+                      <div className="text-[10px] text-white/40">الموقع</div>
+                      <div className="text-xs text-white/80">{city}, {country}</div>
                     </div>
                   </div>
                 </div>
@@ -424,28 +455,28 @@ function TimeAndPrayerBar() {
           </div>
 
           {/* أزرار التحكم */}
-          <div className="flex gap-2">
+          <div className="flex gap-1.5">
             <button
               onClick={() => setIs24Hour(!is24Hour)}
-              className="p-2 rounded-lg bg-white/5 hover:bg-white/10 transition-all duration-200 group"
+              className="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 transition-all duration-200 group"
               title="تبديل التنسيق"
             >
-              <Clock className="w-4 h-4 text-white/60 group-hover:text-white transition-colors" />
+              <Clock className="w-3.5 h-3.5 text-white/60 group-hover:text-white transition-colors" />
             </button>
             <button
               onClick={() => setIsEditingLocation(!isEditingLocation)}
-              className="p-2 rounded-lg bg-white/5 hover:bg-white/10 transition-all duration-200 group"
+              className="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 transition-all duration-200 group"
               title="تغيير الموقع"
             >
-              <Compass className="w-4 h-4 text-white/60 group-hover:text-white transition-colors" />
+              <Compass className="w-3.5 h-3.5 text-white/60 group-hover:text-white transition-colors" />
             </button>
           </div>
         </div>
 
         {/* تفاصيل أوقات الصلاة */}
         {showPrayerDetails && prayerTimes && (
-          <div className="mt-4 pt-4 border-t border-white/10 animate-slide-in">
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+          <div className="mt-3 pt-3 border-t border-white/10 animate-slide-in">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2">
               {Object.entries(prayerTimes).map(([prayer, time]) => {
                 const prayerNames = {
                   fajr: "الفجر",
@@ -457,10 +488,10 @@ function TimeAndPrayerBar() {
                 };
                 const status = getPrayerStatus(time);
                 return (
-                  <div key={prayer} className="text-center p-2 bg-white/5 rounded-lg">
-                    <div className="text-xs text-white/40 mb-1">{prayerNames[prayer]}</div>
-                    <div className="text-base md:text-lg font-semibold text-white">{time}</div>
-                    <div className={`text-xs mt-1 ${status === "قادم" ? "text-emerald-400" : "text-white/30"}`}>
+                  <div key={prayer} className="text-center p-1.5 bg-white/5 rounded-lg">
+                    <div className="text-[10px] text-white/40 mb-0.5">{prayerNames[prayer]}</div>
+                    <div className="text-sm md:text-base font-semibold text-white">{time}</div>
+                    <div className={`text-[10px] mt-0.5 ${status === "قادم" ? "text-emerald-400" : "text-white/30"}`}>
                       {status}
                     </div>
                   </div>
@@ -525,10 +556,10 @@ function TimeAndPrayerBar() {
       </div>
 
       {/* شريط RSS أسفل الوقت */}
-      <div className="mt-3 flex items-center justify-center gap-2">
-        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/20 backdrop-blur-sm">
-          <Rss className="w-3 h-3 text-indigo-400 animate-pulse" />
-          <span className="text-[11px] text-indigo-300">مصادر علمية موثوقة • تحديث مباشر</span>
+      <div className="mt-2 flex items-center justify-center gap-2">
+        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 backdrop-blur-sm">
+          <Rss className="w-2.5 h-2.5 text-indigo-400 animate-pulse" />
+          <span className="text-[9px] text-indigo-300">مصادر علمية موثوقة • تحديث مباشر</span>
         </div>
       </div>
     </div>
@@ -870,7 +901,7 @@ export function HeroSection() {
       <div className="relative max-w-7xl mx-auto z-10 px-4 pb-8">
         
         {/* شريط الوقت والصلاة - مع مسافة من الأعلى */}
-        <div className="pt-2">
+        <div className="pt-0">
           <TimeAndPrayerBar />
         </div>
 
