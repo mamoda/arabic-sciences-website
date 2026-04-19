@@ -204,7 +204,7 @@ function TimeAndPrayerBar() {
   const getApproximatePrayerTimes = () => {
     const now = new Date();
     const month = now.getMonth();
-    const isWinter = month >= 10 || month <= 2; // تقريباً شتاء
+    const isWinter = month >= 10 || month <= 2;
     
     if (isWinter) {
       return {
@@ -250,8 +250,9 @@ function TimeAndPrayerBar() {
           });
           
           // جلب التاريخ الهجري
+          const currentDate = new Date();
           const hijriResponse = await fetch(
-            `https://api.aladhan.com/v1/gToH?date=${now.getDate()}-${now.getMonth() + 1}-${now.getFullYear()}`
+            `https://api.aladhan.com/v1/gToH?date=${currentDate.getDate()}-${currentDate.getMonth() + 1}-${currentDate.getFullYear()}`
           );
           const hijriData = await hijriResponse.json();
           if (hijriData.code === 200) {
