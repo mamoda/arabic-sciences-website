@@ -134,7 +134,7 @@ export function HeroSection() {
     if (autoRefresh) {
       refreshInterval.current = setInterval(() => {
         fetchAllNews();
-      }, 30000); // تحديث كل 30 ثانية
+      }, 300000); // تحديث كل 30 ثانية
     }
     
     return () => {
