@@ -386,7 +386,7 @@ function TimeAndPrayerBar() {
   };
 
   return (
-    <div className="w-full pt-2 px-4 animate-fade-in">
+    <div className="w-full pt-2 px-2 animate-fade-in">
       <div className="bg-gradient-to-r from-indigo-600/20 via-purple-600/20 to-indigo-600/20 backdrop-blur-xl rounded-2xl border border-white/10 p-3 shadow-2xl">
         
         <div className="flex flex-col md:flex-row justify-between items-center gap-3">
