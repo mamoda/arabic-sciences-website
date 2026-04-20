@@ -387,26 +387,26 @@ function TimeAndPrayerBar() {
 
   return (
     <div className="w-full pt-2 px-4 animate-fade-in">
-      <div className="bg-gradient-to-r from-indigo-600/20 via-purple-600/20 to-indigo-600/20 backdrop-blur-xl rounded-2xl border border-white/10 p-3 shadow-2xl">
+      <div className="bg-gradient-to-r from-indigo-600/20 via-purple-600/20 to-indigo-600/20 backdrop-blur-xl rounded-2xl border border-white/10 p-2 shadow-2xl">
         
-        <div className="flex flex-col md:flex-row justify-between items-center gap-3">
+        <div className="flex flex-col md:flex-row justify-between items-center gap-2">
           {/* الوقت والتاريخ */}
           <div className="text-center md:text-right">
-            <div className="text-xl md:text-2xl lg:text-3xl font-bold bg-gradient-to-r from-white to-indigo-200 bg-clip-text text-transparent font-mono tracking-wider">
+            <div className="text-lg md:text-xl lg:text-2xl font-bold bg-gradient-to-r from-white to-indigo-200 bg-clip-text text-transparent font-mono tracking-wider">
               {formatTime(currentTime)}
             </div>
-            <div className="text-[9px] text-white/40 mt-0.5 flex items-center justify-center md:justify-end gap-1">
+            <div className="text-[8px] text-white/40 mt-0.5 flex items-center justify-center md:justify-end gap-1">
               <Calendar className="w-2 h-2" />
               <span>{currentDate}</span>
             </div>
             {hijriDate && hijriDate !== "جاري التحميل..." && (
-              <div className="text-[9px] text-indigo-300/60 mt-0.5 flex items-center justify-center md:justify-end gap-1">
+              <div className="text-[8px] text-indigo-300/60 mt-0.5 flex items-center justify-center md:justify-end gap-1">
                 <Moon className="w-2 h-2" />
                 <span>{hijriDate}</span>
               </div>
             )}
             {prayerError && (
-              <div className="text-[9px] text-yellow-400/60 mt-0.5 flex items-center justify-center md:justify-end gap-1">
+              <div className="text-[8px] text-yellow-400/60 mt-0.5 flex items-center justify-center md:justify-end gap-1">
                 <AlertCircle className="w-2 h-2" />
                 <span>أوقات تقريبية</span>
               </div>
@@ -419,34 +419,34 @@ function TimeAndPrayerBar() {
               onClick={() => setShowPrayerDetails(!showPrayerDetails)}
               className="w-full"
             >
-              <div className="bg-black/30 rounded-xl p-1.5 border border-white/10 hover:border-indigo-500/30 transition-all duration-300">
+              <div className="bg-black/30 rounded-xl p-1 border border-white/10 hover:border-indigo-500/30 transition-all duration-300">
                 <div className="flex items-center justify-between gap-2 flex-wrap">
                   <div className="flex items-center gap-1.5">
-                    <div className="w-6 h-6 rounded-full bg-emerald-500/20 flex items-center justify-center">
-                      <Moon className="w-3 h-3 text-emerald-400" />
+                    <div className="w-5 h-5 rounded-full bg-emerald-500/20 flex items-center justify-center">
+                      <Moon className="w-2.5 h-2.5 text-emerald-400" />
                     </div>
                     <div className="text-right">
-                      <div className="text-[9px] text-white/40">أقرب صلاة</div>
-                      <div className="text-sm font-semibold text-white">
+                      <div className="text-[8px] text-white/40">أقرب صلاة</div>
+                      <div className="text-xs font-semibold text-white">
                         {nextPrayer?.arabicName || "جاري التحميل"}
                       </div>
                     </div>
                   </div>
                   
                   <div className="text-center">
-                    <div className="text-[9px] text-white/40">الوقت المتبقي</div>
-                    <div className="text-base font-bold text-emerald-400">
+                    <div className="text-[8px] text-white/40">الوقت المتبقي</div>
+                    <div className="text-sm font-bold text-emerald-400">
                       {timeToNextPrayer || "--"}
                     </div>
                   </div>
                   
                   <div className="flex items-center gap-1">
-                    <div className="w-6 h-6 rounded-full bg-white/10 flex items-center justify-center">
-                      <MapPin className="w-3 h-3 text-white/60" />
+                    <div className="w-5 h-5 rounded-full bg-white/10 flex items-center justify-center">
+                      <MapPin className="w-2.5 h-2.5 text-white/60" />
                     </div>
                     <div className="text-right">
-                      <div className="text-[9px] text-white/40">الموقع</div>
-                      <div className="text-[10px] text-white/80">{city}</div>
+                      <div className="text-[8px] text-white/40">الموقع</div>
+                      <div className="text-[9px] text-white/80">{city}</div>
                     </div>
                   </div>
                 </div>
@@ -458,17 +458,17 @@ function TimeAndPrayerBar() {
           <div className="flex gap-1">
             <button
               onClick={() => setIs24Hour(!is24Hour)}
-              className="p-1 rounded-lg bg-white/5 hover:bg-white/10 transition-all duration-200 group"
+              className="p-0.5 rounded-lg bg-white/5 hover:bg-white/10 transition-all duration-200 group"
               title="تبديل التنسيق"
             >
-              <Clock className="w-3 h-3 text-white/60 group-hover:text-white transition-colors" />
+              <Clock className="w-2.5 h-2.5 text-white/60 group-hover:text-white transition-colors" />
             </button>
             <button
               onClick={() => setIsEditingLocation(!isEditingLocation)}
-              className="p-1 rounded-lg bg-white/5 hover:bg-white/10 transition-all duration-200 group"
+              className="p-0.5 rounded-lg bg-white/5 hover:bg-white/10 transition-all duration-200 group"
               title="تغيير الموقع"
             >
-              <Compass className="w-3 h-3 text-white/60 group-hover:text-white transition-colors" />
+              <Compass className="w-2.5 h-2.5 text-white/60 group-hover:text-white transition-colors" />
             </button>
           </div>
         </div>
@@ -476,7 +476,7 @@ function TimeAndPrayerBar() {
         {/* تفاصيل أوقات الصلاة */}
         {showPrayerDetails && prayerTimes && (
           <div className="mt-2 pt-2 border-t border-white/10 animate-slide-in">
-            <div className="grid grid-cols-3 md:grid-cols-6 gap-1.5">
+            <div className="grid grid-cols-3 md:grid-cols-6 gap-1">
               {Object.entries(prayerTimes).map(([prayer, time]) => {
                 const prayerNames = {
                   fajr: "الفجر",
@@ -488,10 +488,10 @@ function TimeAndPrayerBar() {
                 };
                 const status = getPrayerStatus(time);
                 return (
-                  <div key={prayer} className="text-center p-1 bg-white/5 rounded-lg">
-                    <div className="text-[8px] text-white/40">{prayerNames[prayer]}</div>
-                    <div className="text-xs font-semibold text-white">{time}</div>
-                    <div className={`text-[8px] mt-0.5 ${status === "قادم" ? "text-emerald-400" : "text-white/30"}`}>
+                  <div key={prayer} className="text-center p-0.5 bg-white/5 rounded-lg">
+                    <div className="text-[7px] text-white/40">{prayerNames[prayer]}</div>
+                    <div className="text-[10px] font-semibold text-white">{time}</div>
+                    <div className={`text-[7px] mt-0.5 ${status === "قادم" ? "text-emerald-400" : "text-white/30"}`}>
                       {status}
                     </div>
                   </div>
@@ -553,12 +553,6 @@ function TimeAndPrayerBar() {
             </div>
           </div>
         )}
-      </div>
-
-      <div className="mt-1 flex items-center justify-center gap-2">
-        <div className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-indigo-500/10 border border-indigo-500/20 backdrop-blur-sm">
-          <Rss className="w-2 h-2 text-indigo-400 animate-pulse" />
-        </div>
       </div>
     </div>
   );
@@ -854,7 +848,7 @@ export function HeroSection() {
   };
 
   return (
-    <section className="relative min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-white">
+    <section className="relative min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-white pt-16 md:pt-20">
       
       {/* خلفية متحركة */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
@@ -909,17 +903,17 @@ export function HeroSection() {
           <div className="lg:order-1 order-2">
             <div className="bg-white/5 border border-white/10 rounded-2xl overflow-hidden backdrop-blur-xl shadow-2xl transition-all duration-300 hover:shadow-indigo-500/10 h-full flex flex-col">
               
-              <div className="border-b border-white/10 px-4 py-2 bg-black/30">
+              <div className="border-b border-white/10 px-3 py-2 bg-black/30">
                 <div className="flex justify-between items-center flex-wrap gap-2">
                   <div className="flex items-center gap-2">
                     <div className="relative">
                       <Rss className="w-4 h-4 text-orange-400" />
                       <div className="absolute -top-1 -right-1 w-1.5 h-1.5 bg-green-500 rounded-full animate-ping"></div>
                     </div>
-                    <h2 className="font-semibold text-sm">النشرة العلمية المصورة</h2>
+                    <h2 className="font-semibold text-xs">النشرة العلمية المصورة</h2>
                     {lastUpdate && (
-                      <div className="flex items-center gap-1 text-[10px] text-white/40 mr-2">
-                        <Clock className="w-2.5 h-2.5" />
+                      <div className="flex items-center gap-1 text-[9px] text-white/40 mr-2">
+                        <Clock className="w-2 h-2" />
                         <span>{formatDate(lastUpdate)}</span>
                       </div>
                     )}
@@ -928,19 +922,19 @@ export function HeroSection() {
                   <div className="flex items-center gap-1.5">
                     <button
                       onClick={toggleAutoRefresh}
-                      className={`px-2 py-1 rounded-lg text-[10px] transition-all duration-200 flex items-center gap-1 ${
+                      className={`px-1.5 py-0.5 rounded-lg text-[9px] transition-all duration-200 flex items-center gap-0.5 ${
                         autoRefresh 
                           ? "bg-green-500/20 text-green-400 border border-green-500/30" 
                           : "bg-white/5 text-white/40 border border-white/10"
                       }`}
                     >
-                      <RefreshCw className={`w-2.5 h-2.5 ${autoRefresh ? "animate-spin-slow" : ""}`} />
+                      <RefreshCw className={`w-2 h-2 ${autoRefresh ? "animate-spin-slow" : ""}`} />
                       {autoRefresh ? "تلقائي" : "يدوي"}
                     </button>
                     <button
                       onClick={fetchAllNews}
                       disabled={loadingNews}
-                      className="p-1 rounded-lg bg-white/5 hover:bg-white/10 transition-all duration-200 disabled:opacity-50"
+                      className="p-0.5 rounded-lg bg-white/5 hover:bg-white/10 transition-all duration-200 disabled:opacity-50"
                     >
                       <RefreshCw className={`w-3 h-3 ${loadingNews ? "animate-spin" : ""}`} />
                     </button>
@@ -948,24 +942,24 @@ export function HeroSection() {
                 </div>
               </div>
 
-              <div className="flex-1 overflow-y-auto p-3 space-y-3 max-h-[400px]">
+              <div className="flex-1 overflow-y-auto p-2 space-y-2 max-h-[380px]">
                 {connectionError && !loadingNews && (
-                  <div className="bg-yellow-500/10 border border-yellow-500/30 rounded-xl p-2 mb-2">
-                    <div className="flex items-center gap-2 text-yellow-400 text-xs">
-                      <WifiOff className="w-3 h-3" />
-                      <span>بيانات تجريبية مؤقتاً</span>
+                  <div className="bg-yellow-500/10 border border-yellow-500/30 rounded-xl p-1.5 mb-1">
+                    <div className="flex items-center gap-1.5 text-yellow-400 text-[10px]">
+                      <WifiOff className="w-2.5 h-2.5" />
+                      <span>بيانات تجريبية</span>
                     </div>
                   </div>
                 )}
                 
                 {loadingNews ? (
-                  <div className="space-y-3">
+                  <div className="space-y-2">
                     {[1, 2, 3].map((i) => (
                       <div key={i} className="animate-pulse">
                         <div className="bg-white/5 rounded-xl overflow-hidden">
-                          <div className="h-32 bg-white/10"></div>
-                          <div className="p-3">
-                            <div className="h-3 bg-white/10 rounded w-3/4 mb-2"></div>
+                          <div className="h-28 bg-white/10"></div>
+                          <div className="p-2">
+                            <div className="h-2.5 bg-white/10 rounded w-3/4 mb-1.5"></div>
                             <div className="h-2 bg-white/5 rounded w-full mb-1"></div>
                             <div className="h-2 bg-white/5 rounded w-2/3"></div>
                           </div>
@@ -974,9 +968,9 @@ export function HeroSection() {
                     ))}
                   </div>
                 ) : news.length === 0 ? (
-                  <div className="text-center text-white/40 py-8">
-                    <Rss className="w-8 h-8 mx-auto mb-2 opacity-50" />
-                    <p className="text-xs">لا توجد أخبار حالياً</p>
+                  <div className="text-center text-white/40 py-6">
+                    <Rss className="w-6 h-6 mx-auto mb-1 opacity-50" />
+                    <p className="text-[10px]">لا توجد أخبار</p>
                   </div>
                 ) : (
                   news.map((item, idx) => {
@@ -989,7 +983,7 @@ export function HeroSection() {
                       >
                         {/* صورة الخبر */}
                         {hasValidImage && (
-                          <div className="relative h-32 overflow-hidden">
+                          <div className="relative h-28 overflow-hidden">
                             <img
                               src={item.thumbnail}
                               alt={item.title}
@@ -998,8 +992,8 @@ export function HeroSection() {
                               loading="lazy"
                             />
                             <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
-                            <div className="absolute top-2 left-2">
-                              <span className={`text-[10px] px-1.5 py-0.5 rounded-full bg-gradient-to-r ${item.sourceColor} shadow-lg`}>
+                            <div className="absolute top-1.5 left-1.5">
+                              <span className={`text-[9px] px-1 py-0.5 rounded-full bg-gradient-to-r ${item.sourceColor} shadow-lg`}>
                                 {item.source}
                               </span>
                             </div>
@@ -1009,39 +1003,39 @@ export function HeroSection() {
                                   e.stopPropagation();
                                   openLightbox(item.images, 0);
                                 }}
-                                className="absolute bottom-2 right-2 p-1 rounded-lg bg-black/50 hover:bg-black/70 transition-all duration-200 backdrop-blur-sm"
+                                className="absolute bottom-1.5 right-1.5 p-0.5 rounded-lg bg-black/50 hover:bg-black/70 transition-all duration-200 backdrop-blur-sm"
                               >
-                                <Image className="w-3 h-3" />
+                                <Image className="w-2.5 h-2.5" />
                               </button>
                             )}
                           </div>
                         )}
                         
-                        <div className="p-3">
-                          <div className="flex items-center gap-2 mb-1 flex-wrap">
-                            <span className="text-[10px] text-white/30 flex items-center gap-0.5">
-                              <Calendar className="w-2.5 h-2.5" />
+                        <div className="p-2">
+                          <div className="flex items-center gap-1.5 mb-1 flex-wrap">
+                            <span className="text-[9px] text-white/30 flex items-center gap-0.5">
+                              <Calendar className="w-2 h-2" />
                               {formatDate(item.pubDate)}
                             </span>
                           </div>
-                          <h3 className="font-semibold text-xs mb-1 line-clamp-2 group-hover:text-indigo-300 transition-colors">
+                          <h3 className="font-semibold text-[10px] mb-1 line-clamp-2 group-hover:text-indigo-300 transition-colors">
                             {item.title}
                           </h3>
-                          <div className={`text-[10px] text-white/40 leading-relaxed transition-all duration-300 ${
-                            expandedNews === idx ? "max-h-24" : "max-h-8 overflow-hidden"
+                          <div className={`text-[9px] text-white/40 leading-relaxed transition-all duration-300 ${
+                            expandedNews === idx ? "max-h-20" : "max-h-6 overflow-hidden"
                           }`}>
                             {item.description}
                           </div>
-                          <div className="flex items-center gap-2 mt-2">
+                          <div className="flex items-center gap-1.5 mt-1.5">
                             {item.link && item.link !== "#" && (
                               <a
                                 href={item.link}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="text-[10px] text-indigo-400 hover:text-indigo-300 flex items-center gap-0.5 transition-colors"
+                                className="text-[9px] text-indigo-400 hover:text-indigo-300 flex items-center gap-0.5 transition-colors"
                                 onClick={(e) => e.stopPropagation()}
                               >
-                                <ExternalLink className="w-2.5 h-2.5" />
+                                <ExternalLink className="w-2 h-2" />
                                 قراءة
                               </a>
                             )}
@@ -1051,9 +1045,9 @@ export function HeroSection() {
                                 setQuestion(`أخبرني عن: ${item.title}`);
                                 inputRef.current?.focus();
                               }}
-                              className="text-[10px] text-white/40 hover:text-white transition-colors flex items-center gap-0.5"
+                              className="text-[9px] text-white/40 hover:text-white transition-colors flex items-center gap-0.5"
                             >
-                              <Send className="w-2.5 h-2.5" />
+                              <Send className="w-2 h-2" />
                               اسأل
                             </button>
                             {item.images && item.images.length > 0 && (
@@ -1062,9 +1056,9 @@ export function HeroSection() {
                                   e.stopPropagation();
                                   openLightbox(item.images, 0);
                                 }}
-                                className="text-[10px] text-white/40 hover:text-white transition-colors flex items-center gap-0.5"
+                                className="text-[9px] text-white/40 hover:text-white transition-colors flex items-center gap-0.5"
                               >
-                                <Image className="w-2.5 h-2.5" />
+                                <Image className="w-2 h-2" />
                                 صور
                               </button>
                             )}
@@ -1076,11 +1070,10 @@ export function HeroSection() {
                 )}
               </div>
 
-              <div className="border-t border-white/10 px-3 py-2 bg-black/20">
-                <div className="flex justify-between items-center text-[10px] text-white/40">
+              <div className="border-t border-white/10 px-2 py-1.5 bg-black/20">
+                <div className="flex justify-between items-center text-[8px] text-white/40">
                   <span>📊 {news.length} خبر</span>
                   <span>🔄 {RSS_FEEDS.length} مصدر</span>
-                  <span>🖼️ معرض</span>
                 </div>
               </div>
             </div>
@@ -1090,39 +1083,39 @@ export function HeroSection() {
           <div className="lg:order-2 order-1">
             <div className="bg-white/5 border border-white/10 rounded-2xl overflow-hidden backdrop-blur-xl shadow-2xl transition-all duration-300 hover:shadow-indigo-500/10">
               
-              <div className="border-b border-white/10 px-4 py-2 flex justify-between items-center bg-black/30">
-                <div className="flex items-center gap-2">
+              <div className="border-b border-white/10 px-3 py-1.5 flex justify-between items-center bg-black/30">
+                <div className="flex items-center gap-1.5">
                   <div className="relative">
                     <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></div>
                     <div className="absolute inset-0 w-1.5 h-1.5 rounded-full bg-green-500 animate-ping"></div>
                   </div>
-                  <span className="text-xs text-white/60">متصل • مساعد ذكي</span>
+                  <span className="text-[10px] text-white/60">متصل • مساعد ذكي</span>
                 </div>
-                <div className="text-xs text-white/40 flex items-center gap-1">
-                  <Newspaper className="w-3 h-3" />
+                <div className="text-[9px] text-white/40 flex items-center gap-1">
+                  <Newspaper className="w-2.5 h-2.5" />
                   {messages.length} محادثة
                 </div>
               </div>
 
               <div
                 ref={chatRef}
-                className="h-[400px] overflow-y-auto p-3 space-y-3 scroll-smooth"
+                className="h-[380px] overflow-y-auto p-2 space-y-2 scroll-smooth"
               >
                 {messages.length === 0 && (
                   <div className="flex flex-col items-center justify-center h-full text-center animate-fade-in">
-                    <div className="w-16 h-16 rounded-full bg-gradient-to-r from-indigo-500/20 to-purple-500/20 flex items-center justify-center mb-3 animate-pulse">
-                      <Sparkles className="w-8 h-8 text-indigo-400" />
+                    <div className="w-12 h-12 rounded-full bg-gradient-to-r from-indigo-500/20 to-purple-500/20 flex items-center justify-center mb-2 animate-pulse">
+                      <Sparkles className="w-6 h-6 text-indigo-400" />
                     </div>
-                    <h3 className="text-white/60 font-medium text-sm mb-1">مرحباً بك!</h3>
-                    <p className="text-white/40 text-xs max-w-md">
+                    <h3 className="text-white/60 font-medium text-xs mb-1">مرحباً بك!</h3>
+                    <p className="text-white/40 text-[10px] max-w-md">
                       اسألني عن أي موضوع في العلوم
                     </p>
-                    <div className="flex flex-wrap gap-1.5 mt-4 justify-center">
+                    <div className="flex flex-wrap gap-1 mt-3 justify-center">
                       {["الفضاء", "السرطان", "الذكاء الاصطناعي"].map((suggestion) => (
                         <button
                           key={suggestion}
                           onClick={() => setQuestion(suggestion)}
-                          className="px-2 py-1 rounded-full bg-white/5 hover:bg-white/10 text-[10px] text-white/60 transition-all duration-200 hover:scale-105"
+                          className="px-1.5 py-0.5 rounded-full bg-white/5 hover:bg-white/10 text-[9px] text-white/60 transition-all duration-200 hover:scale-105"
                         >
                           {suggestion}
                         </button>
@@ -1139,7 +1132,7 @@ export function HeroSection() {
                   >
                     <div className={`max-w-[85%] ${msg.role === "user" ? "order-2" : "order-1"}`}>
                       <div
-                        className={`px-3 py-2 rounded-2xl text-xs leading-relaxed shadow-lg transition-all duration-200 ${
+                        className={`px-2.5 py-1.5 rounded-xl text-[10px] leading-relaxed shadow-lg transition-all duration-200 ${
                           msg.role === "user"
                             ? "bg-gradient-to-r from-indigo-500 to-indigo-600 text-white rounded-br-sm"
                             : msg.isError 
@@ -1149,13 +1142,13 @@ export function HeroSection() {
                       >
                         {msg.text}
                         {msg.sources && (
-                          <div className="mt-1 pt-1 border-t border-white/10 text-[10px] text-white/40 flex items-center gap-1">
-                            <BookOpen className="w-2.5 h-2.5" />
+                          <div className="mt-1 pt-1 border-t border-white/10 text-[8px] text-white/40 flex items-center gap-0.5">
+                            <BookOpen className="w-2 h-2" />
                             المصادر: {msg.sources}
                           </div>
                         )}
                       </div>
-                      <div className={`flex gap-1.5 mt-0.5 text-[9px] text-white/30 ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
+                      <div className={`flex gap-1 mt-0.5 text-[8px] text-white/30 ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
                         <span>{formatTime(msg.timestamp)}</span>
                         {msg.role === "ai" && !msg.isError && (
                           <button
@@ -1163,7 +1156,7 @@ export function HeroSection() {
                             className="hover:text-white transition-colors"
                             title="نسخ النص"
                           >
-                            {copiedIndex === i ? <Check className="w-2.5 h-2.5" /> : <Copy className="w-2.5 h-2.5" />}
+                            {copiedIndex === i ? <Check className="w-2 h-2" /> : <Copy className="w-2 h-2" />}
                           </button>
                         )}
                       </div>
@@ -1174,14 +1167,14 @@ export function HeroSection() {
                 {loading && (
                   <div className="flex justify-start animate-slide-in">
                     <div className="max-w-[85%]">
-                      <div className="px-3 py-2 rounded-2xl bg-white/10 rounded-bl-sm">
-                        <div className="flex items-center gap-2">
-                          <div className="flex gap-1">
-                            <div className="w-1.5 h-1.5 bg-indigo-400 rounded-full animate-bounce"></div>
-                            <div className="w-1.5 h-1.5 bg-indigo-400 rounded-full animate-bounce delay-100"></div>
-                            <div className="w-1.5 h-1.5 bg-indigo-400 rounded-full animate-bounce delay-200"></div>
+                      <div className="px-2.5 py-1.5 rounded-xl bg-white/10 rounded-bl-sm">
+                        <div className="flex items-center gap-1.5">
+                          <div className="flex gap-0.5">
+                            <div className="w-1 h-1 bg-indigo-400 rounded-full animate-bounce"></div>
+                            <div className="w-1 h-1 bg-indigo-400 rounded-full animate-bounce delay-100"></div>
+                            <div className="w-1 h-1 bg-indigo-400 rounded-full animate-bounce delay-200"></div>
                           </div>
-                          <span className="text-xs text-white/60 mr-2">جاري التفكير</span>
+                          <span className="text-[10px] text-white/60 mr-1">جاري التفكير</span>
                         </div>
                       </div>
                     </div>
@@ -1192,63 +1185,63 @@ export function HeroSection() {
               {showScrollButton && (
                 <button
                   onClick={scrollToBottom}
-                  className="absolute bottom-20 right-8 bg-indigo-500 hover:bg-indigo-600 rounded-full p-1.5 shadow-lg transition-all duration-200 hover:scale-110 animate-bounce-in"
+                  className="absolute bottom-20 right-8 bg-indigo-500 hover:bg-indigo-600 rounded-full p-1 shadow-lg transition-all duration-200 hover:scale-110 animate-bounce-in"
                 >
-                  <ArrowDown className="w-3 h-3" />
+                  <ArrowDown className="w-2.5 h-2.5" />
                 </button>
               )}
 
               {error && (
-                <div className="mx-3 mb-1 px-2 py-1 rounded-lg bg-red-500/20 border border-red-500/30 text-red-200 text-xs flex items-center gap-1 animate-slide-in">
-                  <AlertCircle className="w-3 h-3" />
+                <div className="mx-2 mb-1 px-1.5 py-0.5 rounded-lg bg-red-500/20 border border-red-500/30 text-red-200 text-[9px] flex items-center gap-1 animate-slide-in">
+                  <AlertCircle className="w-2.5 h-2.5" />
                   {error}
                 </div>
               )}
 
-              <div className="border-t border-white/10 p-2 bg-black/30">
-                <div className="flex gap-1.5">
+              <div className="border-t border-white/10 p-1.5 bg-black/30">
+                <div className="flex gap-1">
                   <div className="flex-1 relative">
                     <input
                       ref={inputRef}
                       value={question}
                       onChange={(e) => setQuestion(e.target.value)}
                       onKeyDown={handleKeyDown}
-                      placeholder="اسأل عن أي موضوع علمي..."
+                      placeholder="اسأل..."
                       disabled={loading}
-                      className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-white text-sm outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="w-full bg-white/5 border border-white/10 rounded-xl px-2 py-1.5 text-white text-xs outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                     />
                   </div>
                   
                   <button
                     onClick={sendMessage}
                     disabled={loading || !question.trim()}
-                    className="bg-gradient-to-r from-indigo-500 to-indigo-600 hover:from-indigo-600 hover:to-indigo-700 disabled:from-indigo-500/50 disabled:to-indigo-600/50 transition-all duration-200 px-3 rounded-xl flex items-center gap-1 shadow-lg hover:shadow-indigo-500/25 disabled:cursor-not-allowed"
+                    className="bg-gradient-to-r from-indigo-500 to-indigo-600 hover:from-indigo-600 hover:to-indigo-700 disabled:from-indigo-500/50 disabled:to-indigo-600/50 transition-all duration-200 px-2 rounded-xl flex items-center gap-0.5 shadow-lg hover:shadow-indigo-500/25 disabled:cursor-not-allowed"
                   >
-                    <Send className="w-3.5 h-3.5" />
+                    <Send className="w-3 h-3" />
                   </button>
                 </div>
                 
-                <div className="mt-1 text-[9px] text-white/30 text-center">
-                  Enter للإرسال · Shift+Enter لسطر جديد
+                <div className="mt-0.5 text-[7px] text-white/30 text-center">
+                  Enter للإرسال
                 </div>
               </div>
 
-              <div className="flex justify-between items-center px-3 py-1.5 text-[10px] border-t border-white/10 bg-black/20">
+              <div className="flex justify-between items-center px-2 py-1 text-[8px] border-t border-white/10 bg-black/20">
                 <button
                   onClick={clearChat}
                   disabled={messages.length === 0}
-                  className="flex items-center gap-1 text-white/40 hover:text-red-400 transition-all duration-200 disabled:opacity-30 disabled:cursor-not-allowed group"
+                  className="flex items-center gap-0.5 text-white/40 hover:text-red-400 transition-all duration-200 disabled:opacity-30 disabled:cursor-not-allowed group"
                 >
-                  <Trash2 className="w-2.5 h-2.5 group-hover:scale-110 transition-transform" />
+                  <Trash2 className="w-2 h-2 group-hover:scale-110 transition-transform" />
                   مسح
                 </button>
                 
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1.5">
                   <span className="text-white/30">© 2026</span>
                   <span className="text-white/20">|</span>
                   <span className="text-white/30 flex items-center gap-0.5">
-                    <Sparkles className="w-2.5 h-2.5" />
-                    Edarty-Ai
+                    <Sparkles className="w-2 h-2" />
+                    Edarty
                   </span>
                 </div>
               </div>
